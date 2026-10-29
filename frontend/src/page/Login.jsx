@@ -1,124 +1,57 @@
 import { useState } from 'react'
-import {
-  DEMO_USER,
-  normalizeEmail,
-  validateCredentials,
-  validateLogin,
-} from './loginValidation.js'
-
-const inputClasses = (hasError) =>
-  [
-    'w-full rounded-xl border bg-slate-900/60 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:ring-2',
-    hasError
-      ? 'border-rose-400/70 focus:border-rose-400 focus:ring-rose-400/30'
-      : 'border-white/10 focus:border-indigo-400 focus:ring-indigo-400/30',
-  ].join(' ')
+import { Link, useNavigate } from 'react-router-dom'
+import { login } from '../api/auth.js'
+import { useAuth } from '../auth/useAuth.js'
+import { inputClasses } from './formStyles.js'
+import { validateLogin } from './loginValidation.js'
 
 function Login() {
-  const [form, setForm] = useState({ email: '', password: '' })
+  const navigate = useNavigate()
+  const { signIn } = useAuth()
+  const [form, setForm] = useState({ identificador: '', contrasena: '' })
   const [errors, setErrors] = useState({})
-  const [feedback, setFeedback] = useState(null)
-  const [authenticated, setAuthenticated] = useState(false)
+  const [feedback, setFeedback] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleChange = (event) => {
     const { name, value } = event.target
 
     setForm((current) => ({ ...current, [name]: value }))
     setErrors((current) => ({ ...current, [name]: '' }))
-
-    if (feedback?.type === 'error') {
-      setFeedback(null)
-    }
+    setFeedback('')
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
     const { errors: nextErrors, isValid } = validateLogin(form)
     setErrors(nextErrors)
+    setFeedback('')
 
     if (!isValid) {
-      setFeedback({
-        type: 'error',
-        message: 'Revisa los campos marcados antes de continuar.',
-      })
       return
     }
 
-    if (!validateCredentials(form.email, form.password)) {
-      setFeedback({
-        type: 'error',
-        message:
-          'Correo o contraseña incorrectos. Verifica tus datos e inténtalo de nuevo.',
+    setIsSubmitting(true)
+
+    try {
+      const session = await login({
+        identificador: form.identificador.trim(),
+        contrasena: form.contrasena,
       })
-      return
+
+      signIn(session)
+      navigate('/catalogo', { replace: true })
+    } catch (error) {
+      setErrors(error?.fieldErrors ?? {})
+      setFeedback(
+        error?.message ||
+          'No se pudo iniciar sesión. Inténtalo de nuevo.',
+      )
+    } finally {
+      setIsSubmitting(false)
     }
-
-    setAuthenticated(true)
-    setFeedback({
-      type: 'success',
-      message: `Bienvenido, ${normalizeEmail(form.email)}. Tu sesión se inició correctamente.`,
-    })
-  }
-
-  const handleLogout = () => {
-    setForm({ email: '', password: '' })
-    setErrors({})
-    setFeedback(null)
-    setShowPassword(false)
-    setAuthenticated(false)
-  }
-
-  const useDemoAccount = () => {
-    setForm({ email: DEMO_USER.email, password: DEMO_USER.password })
-    setErrors({})
-    setFeedback(null)
-  }
-
-  if (authenticated) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
-        <section className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 text-center shadow-2xl backdrop-blur">
-          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-emerald-500/15">
-            <svg
-              className="size-8 text-emerald-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="m5 12 4 4L19 6" />
-            </svg>
-          </div>
-
-          <h1 className="mt-6 text-2xl font-bold text-white">
-            Acceso concedido
-          </h1>
-          <p className="mt-2 text-sm text-slate-300" role="status">
-            {feedback?.message}
-          </p>
-
-          <div className="mt-6 rounded-xl border border-white/10 bg-slate-900/50 p-4 text-left text-sm text-slate-300">
-            <p className="font-semibold text-white">Tu cuenta está lista</p>
-            <p className="mt-1">
-              Ya puedes gestionar tus compras y preferencias.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="mt-6 w-full rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-          >
-            Cerrar sesión
-          </button>
-        </section>
-      </main>
-    )
   }
 
   return (
@@ -142,64 +75,70 @@ function Login() {
           o preferencias.
         </p>
 
-        {feedback?.type === 'error' && (
+        {feedback && (
           <div
             role="alert"
             aria-live="polite"
             className="mt-5 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
           >
-            {feedback.message}
+            {feedback}
           </div>
         )}
 
         <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">
           <div>
             <label
-              htmlFor="email"
+              htmlFor="identificador"
               className="mb-2 block text-sm font-medium text-slate-200"
             >
-              Correo electrónico
+              Correo electrónico o usuario
             </label>
             <input
-              id="email"
-              name="email"
-              type="email"
-              value={form.email}
+              id="identificador"
+              name="identificador"
+              type="text"
+              value={form.identificador}
               onChange={handleChange}
-              autoComplete="email"
-              placeholder="usuario@dominio.com"
-              aria-invalid={Boolean(errors.email)}
-              aria-describedby={errors.email ? 'email-error' : undefined}
-              className={inputClasses(Boolean(errors.email))}
+              autoComplete="username"
+              placeholder="usuario@dominio.com o tu usuario"
+              aria-invalid={Boolean(errors.identificador)}
+              aria-describedby={
+                errors.identificador ? 'identificador-error' : undefined
+              }
+              className={inputClasses(Boolean(errors.identificador))}
             />
-            {errors.email && (
-              <p id="email-error" role="alert" className="mt-2 text-xs text-rose-300">
-                {errors.email}
+            {errors.identificador && (
+              <p
+                id="identificador-error"
+                role="alert"
+                className="mt-2 text-xs text-rose-300"
+              >
+                {errors.identificador}
               </p>
             )}
           </div>
 
           <div>
             <label
-              htmlFor="password"
+              htmlFor="contrasena"
               className="mb-2 block text-sm font-medium text-slate-200"
             >
               Contraseña
             </label>
             <div className="relative">
               <input
-                id="password"
-                name="password"
+                id="contrasena"
+                name="contrasena"
                 type={showPassword ? 'text' : 'password'}
-                value={form.password}
+                value={form.contrasena}
                 onChange={handleChange}
                 autoComplete="current-password"
-                placeholder="Mínimo 8 caracteres"
-                aria-invalid={Boolean(errors.password)}
+                placeholder="Tu contraseña"
+                aria-invalid={Boolean(errors.contrasena)}
                 aria-describedby={
-                  errors.password ? 'password-error' : 'password-hint'
+                  errors.contrasena ? 'contrasena-error' : undefined
                 }
-                className={`${inputClasses(Boolean(errors.password))} pr-24`}
+                className={`${inputClasses(Boolean(errors.contrasena))} pr-24`}
               />
               <button
                 type="button"
@@ -212,50 +151,34 @@ function Login() {
                 {showPassword ? 'Ocultar' : 'Mostrar'}
               </button>
             </div>
-            {errors.password ? (
+            {errors.contrasena && (
               <p
-                id="password-error"
+                id="contrasena-error"
                 role="alert"
                 className="mt-2 text-xs text-rose-300"
               >
-                {errors.password}
-              </p>
-            ) : (
-              <p id="password-hint" className="mt-2 text-xs text-slate-500">
-                Debe tener al menos 8 caracteres.
+                {errors.contrasena}
               </p>
             )}
           </div>
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            disabled={isSubmitting}
+            className="w-full rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Iniciar sesión
+            {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
           </button>
         </form>
 
-        <div className="mt-6 rounded-xl border border-indigo-400/20 bg-indigo-500/10 p-4">
-          <p className="text-xs font-semibold tracking-wide text-indigo-200 uppercase">
-            Cuenta de prueba
-          </p>
-          <p className="mt-2 text-sm text-slate-300">
-            Correo: {DEMO_USER.email}
-          </p>
-          <p className="text-sm text-slate-300">
-            Contraseña: {DEMO_USER.password}
-          </p>
-          <button
-            type="button"
-            onClick={useDemoAccount}
-            className="mt-3 text-xs font-semibold text-indigo-300 transition hover:text-indigo-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        <p className="mt-5 text-center text-sm text-slate-400">
+          ¿No tienes cuenta?{' '}
+          <Link
+            to="/registro"
+            className="font-semibold text-indigo-300 transition hover:text-indigo-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
           >
-            Usar credenciales de prueba
-          </button>
-        </div>
-
-        <p className="mt-5 text-center text-xs text-slate-500">
-          Demostración local: no se envían credenciales a un servidor.
+            Crear cuenta
+          </Link>
         </p>
       </section>
     </main>
