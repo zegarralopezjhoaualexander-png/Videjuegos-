@@ -1,58 +1,59 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../api/auth.js'
-import { useAuth } from '../auth/useAuth.js'
-import { inputClasses } from './formStyles.js'
-import { validateLogin } from './loginValidation.js'
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../api/auth.js";
+import { useAuth } from "../auth/useAuth.js";
+import FieldError from "../components/FieldError.jsx";
+import PasswordInput from "../components/PasswordInput.jsx";
+import { inputClasses } from "./formStyles.js";
+import { validateLogin } from "./loginValidation.js";
 
 function Login() {
-  const navigate = useNavigate()
-  const { signIn } = useAuth()
-  const [form, setForm] = useState({ identificador: '', contrasena: '' })
-  const [errors, setErrors] = useState({})
-  const [feedback, setFeedback] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const navigate = useNavigate();
+  const { signIn } = useAuth();
+  const [form, setForm] = useState({ identificador: "", contrasena: "" });
+  const [errors, setErrors] = useState({});
+  const [feedback, setFeedback] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
 
-    setForm((current) => ({ ...current, [name]: value }))
-    setErrors((current) => ({ ...current, [name]: '' }))
-    setFeedback('')
-  }
+    setForm((current) => ({ ...current, [name]: value }));
+    setErrors((current) => ({ ...current, [name]: "" }));
+    setFeedback("");
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const { errors: nextErrors, isValid } = validateLogin(form)
-    setErrors(nextErrors)
-    setFeedback('')
+    const { errors: nextErrors, isValid } = validateLogin(form);
+    setErrors(nextErrors);
+    setFeedback("");
 
     if (!isValid) {
-      return
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
       const session = await login({
         identificador: form.identificador.trim(),
         contrasena: form.contrasena,
-      })
+      });
 
-      signIn(session)
-      navigate('/catalogo', { replace: true })
+      signIn(session);
+      navigate("/catalogo", { replace: true });
     } catch (error) {
-      setErrors(error?.fieldErrors ?? {})
+      setErrors(error?.fieldErrors ?? {});
       setFeedback(
-        error?.message ||
-          'No se pudo iniciar sesión. Inténtalo de nuevo.',
-      )
+        error?.message || "No se pudo iniciar sesión. Inténtalo de nuevo."
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
@@ -103,76 +104,40 @@ function Login() {
               placeholder="usuario@dominio.com o tu usuario"
               aria-invalid={Boolean(errors.identificador)}
               aria-describedby={
-                errors.identificador ? 'identificador-error' : undefined
+                errors.identificador ? "identificador-error" : undefined
               }
               className={inputClasses(Boolean(errors.identificador))}
             />
-            {errors.identificador && (
-              <p
-                id="identificador-error"
-                role="alert"
-                className="mt-2 text-xs text-rose-300"
-              >
-                {errors.identificador}
-              </p>
-            )}
+            <FieldError
+              id="identificador-error"
+              message={errors.identificador}
+            />
           </div>
 
-          <div>
-            <label
-              htmlFor="contrasena"
-              className="mb-2 block text-sm font-medium text-slate-200"
-            >
-              Contraseña
-            </label>
-            <div className="relative">
-              <input
-                id="contrasena"
-                name="contrasena"
-                type={showPassword ? 'text' : 'password'}
-                value={form.contrasena}
-                onChange={handleChange}
-                autoComplete="current-password"
-                placeholder="Tu contraseña"
-                aria-invalid={Boolean(errors.contrasena)}
-                aria-describedby={
-                  errors.contrasena ? 'contrasena-error' : undefined
-                }
-                className={`${inputClasses(Boolean(errors.contrasena))} pr-24`}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((current) => !current)}
-                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-semibold text-indigo-300 transition hover:text-indigo-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-                aria-label={
-                  showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
-                }
-              >
-                {showPassword ? 'Ocultar' : 'Mostrar'}
-              </button>
-            </div>
-            {errors.contrasena && (
-              <p
-                id="contrasena-error"
-                role="alert"
-                className="mt-2 text-xs text-rose-300"
-              >
-                {errors.contrasena}
-              </p>
-            )}
-          </div>
+          <PasswordInput
+            id="contrasena"
+            name="contrasena"
+            label="Contraseña"
+            value={form.contrasena}
+            onChange={handleChange}
+            error={errors.contrasena}
+            autoComplete="current-password"
+            placeholder="Tu contraseña"
+            showPassword={showPassword}
+            onToggle={() => setShowPassword((current) => !current)}
+          />
 
           <button
             type="submit"
             disabled={isSubmitting}
             className="w-full rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
         </form>
 
         <p className="mt-5 text-center text-sm text-slate-400">
-          ¿No tienes cuenta?{' '}
+          ¿No tienes cuenta?{" "}
           <Link
             to="/registro"
             className="font-semibold text-indigo-300 transition hover:text-indigo-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
@@ -182,7 +147,7 @@ function Login() {
         </p>
       </section>
     </main>
-  )
+  );
 }
 
-export default Login
+export default Login;

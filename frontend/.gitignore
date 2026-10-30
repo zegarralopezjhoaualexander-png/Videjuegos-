@@ -7,15 +7,28 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencias
+node_modules/
+
+# Artefactos de build
+dist/
+dist-ssr/
+build/
+target/
+
+# Bases de datos H2
+*.mv.db
+*.trace.db
+
+# Variables de entorno
+.env
+.env.*
+!.env.example
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Editores / IDEs
+.vscode/
+.idea/
 .DS_Store
 *.suo
 *.ntvs*

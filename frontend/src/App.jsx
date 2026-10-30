@@ -1,10 +1,10 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
-import ProtectedRoute from './auth/ProtectedRoute.jsx'
-import Login from './page/Login.jsx'
-import Registro from './page/Registro.jsx'
-import Catalogo from './page/Catalogo.jsx'
-import JuegoDetalle from './page/JuegoDetalle.jsx'
-import Admin from './page/Admin.jsx'
+import { Navigate, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "./auth/ProtectedRoute.jsx";
+import Login from "./page/Login.jsx";
+import Registro from "./page/Registro.jsx";
+import Catalogo from "./page/Catalogo.jsx";
+import JuegoDetalle from "./page/JuegoDetalle.jsx";
+import Admin from "./page/Admin.jsx";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
       </Route>
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;

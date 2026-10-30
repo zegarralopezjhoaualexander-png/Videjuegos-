@@ -1,9 +1,9 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
-import { useAuth } from './useAuth.js'
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "./useAuth.js";
 
 function ProtectedRoute() {
-  const { user } = useAuth()
-  const location = useLocation()
+  const { user } = useAuth();
+  const location = useLocation();
 
   if (!user?.token) {
     return (
@@ -12,10 +12,10 @@ function ProtectedRoute() {
         replace
         state={{ from: `${location.pathname}${location.search}` }}
       />
-    )
+    );
   }
 
-  return <Outlet />
+  return <Outlet />;
 }
 
-export default ProtectedRoute
+export default ProtectedRoute;

@@ -1,33 +1,31 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   DESARROLLADOR_MAX_LENGTH,
   DESCRIPCION_MAX_LENGTH,
-  GALERIA_IMAGEN_MAX_LENGTH,
   GENERO_MAX_LENGTH,
   IMAGEN_MAX_LENGTH,
   NOMBRE_MAX_LENGTH,
   PLATAFORMA_MAX_LENGTH,
   REQUISITOS_MAX_LENGTH,
   TRAILER_MAX_LENGTH,
-  getYesterdayInputValue,
   toFormValues,
   toPayload,
   validateJuegoForm,
-} from './adminJuegoValidation.js'
-import { inputClasses } from './formStyles.js'
+} from "./adminJuegoValidation.js";
+import { resolvePublicImage } from "../api/juegos.js";
+import FieldError from "../components/FieldError.jsx";
+import { getYesterdayInputValue } from "../utils/date.js";
+import AdminJuegoGaleria from "./AdminJuegoGaleria.jsx";
+import { inputClasses } from "./formStyles.js";
 
-const MAX_DATE = getYesterdayInputValue()
+const MAX_DATE = getYesterdayInputValue();
 
-function FieldError({ id, message }) {
-  if (!message) {
-    return null
+function getSubmitLabel(isSubmitting, esEdicion) {
+  if (isSubmitting) {
+    return "Guardando...";
   }
 
-  return (
-    <p id={id} role="alert" className="mt-2 text-xs text-rose-300">
-      {message}
-    </p>
-  )
+  return esEdicion ? "Guardar cambios" : "Crear juego";
 }
 
 function TextField({
@@ -36,7 +34,7 @@ function TextField({
   value,
   onChange,
   error,
-  type = 'text',
+  type = "text",
   placeholder,
   maxLength,
   min,
@@ -44,11 +42,11 @@ function TextField({
   step,
   hint,
 }) {
-  const errorId = `${id}-error`
-  const hintId = `${id}-hint`
+  const errorId = `${id}-error`;
+  const hintId = `${id}-hint`;
   const describedBy =
-    [error ? errorId : '', hint ? hintId : ''].filter(Boolean).join(' ') ||
-    undefined
+    [error ? errorId : "", hint ? hintId : ""].filter(Boolean).join(" ") ||
+    undefined;
 
   return (
     <div>
@@ -80,7 +78,7 @@ function TextField({
       )}
       <FieldError id={errorId} message={error} />
     </div>
-  )
+  );
 }
 
 function TextAreaField({
@@ -93,7 +91,7 @@ function TextAreaField({
   rows = 4,
   showCounter = false,
 }) {
-  const errorId = `${id}-error`
+  const errorId = `${id}-error`;
 
   return (
     <div>
@@ -123,13 +121,13 @@ function TextAreaField({
       />
       <FieldError id={errorId} message={error} />
     </div>
-  )
+  );
 }
 
 function ImagePreview({ src }) {
-  const [failedSrc, setFailedSrc] = useState('')
-  const value = src.trim()
-  const canShow = Boolean(value) && failedSrc !== value
+  const [failedSrc, setFailedSrc] = useState("");
+  const value = resolvePublicImage(src);
+  const canShow = Boolean(value) && failedSrc !== value;
 
   return (
     <div className="mt-2 overflow-hidden rounded-xl border border-white/10 bg-slate-900/60">
@@ -143,12 +141,12 @@ function ImagePreview({ src }) {
       ) : (
         <div className="flex h-32 items-center justify-center px-4 text-center text-xs text-slate-500">
           {value
-            ? 'No se pudo cargar la vista previa de la imagen.'
-            : 'La vista previa de la portada aparecerá aquí.'}
+            ? "No se pudo cargar la vista previa de la imagen."
+            : "La vista previa de la portada aparecerá aquí."}
         </div>
       )}
     </div>
-  )
+  );
 }
 
 function AdminJuegoForm({
@@ -158,108 +156,106 @@ function AdminJuegoForm({
   onCancelar,
   onUnauthorized,
 }) {
-  const [form, setForm] = useState(() => toFormValues(juego))
-  const [errors, setErrors] = useState({})
-  const [galeriaErrors, setGaleriaErrors] = useState([])
-  const [feedback, setFeedback] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [form, setForm] = useState(() => toFormValues(juego));
+  const [errors, setErrors] = useState({});
+  const [galeriaErrors, setGaleriaErrors] = useState([]);
+  const [feedback, setFeedback] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
 
-    setForm((current) => ({ ...current, [name]: value }))
-    setErrors((current) => ({ ...current, [name]: '' }))
-    setFeedback('')
-  }
+    setForm((current) => ({ ...current, [name]: value }));
+    setErrors((current) => ({ ...current, [name]: "" }));
+    setFeedback("");
+  };
 
   const handleGaleriaChange = (index, value) => {
     setForm((current) => ({
       ...current,
       galeria: current.galeria.map((url, position) =>
-        position === index ? value : url,
+        position === index ? value : url
       ),
-    }))
+    }));
     setGaleriaErrors((current) =>
-      current.map((message, position) =>
-        position === index ? '' : message,
-      ),
-    )
-    setFeedback('')
-  }
+      current.map((message, position) => (position === index ? "" : message))
+    );
+    setFeedback("");
+  };
 
   const handleAgregarImagen = () => {
     setForm((current) => ({
       ...current,
-      galeria: [...current.galeria, ''],
-    }))
-    setGaleriaErrors((current) => [...current, ''])
-  }
+      galeria: [...current.galeria, ""],
+    }));
+    setGaleriaErrors((current) => [...current, ""]);
+  };
 
   const handleQuitarImagen = (index) => {
     setForm((current) => {
       const galeria = current.galeria.filter(
-        (_, position) => position !== index,
-      )
+        (_, position) => position !== index
+      );
 
       return {
         ...current,
-        galeria: galeria.length > 0 ? galeria : [''],
-      }
-    })
+        galeria: galeria.length > 0 ? galeria : [""],
+      };
+    });
     setGaleriaErrors((current) => {
-      const next = current.filter((_, position) => position !== index)
-      return next.length > 0 ? next : ['']
-    })
-  }
+      const next = current.filter((_, position) => position !== index);
+      return next.length > 0 ? next : [""];
+    });
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const resultado = validateJuegoForm(form)
-    setErrors(resultado.errors)
-    setGaleriaErrors(resultado.galeriaErrors)
-    setFeedback('')
+    const resultado = validateJuegoForm(form);
+    setErrors(resultado.errors);
+    setGaleriaErrors(resultado.galeriaErrors);
+    setFeedback("");
 
     if (!resultado.isValid) {
-      return
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
-      await onGuardar(toPayload(form))
+      await onGuardar(toPayload(form));
     } catch (error) {
       if (error?.status === 401) {
-        await onUnauthorized()
-        return
+        await onUnauthorized();
+        return;
       }
 
       if (error?.status === 403) {
-        setFeedback('No tienes permiso para hacer esto.')
-        return
+        setFeedback("No tienes permiso para hacer esto.");
+        return;
       }
 
-      setErrors(error?.fieldErrors ?? {})
+      setErrors(error?.fieldErrors ?? {});
       setFeedback(
         error?.message ||
-          'No se pudo guardar el juego. Revisa los datos e inténtalo de nuevo.',
-      )
+          "No se pudo guardar el juego. Revisa los datos e inténtalo de nuevo."
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur sm:p-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-white">
-            {esEdicion ? 'Editar juego' : 'Nuevo juego'}
+            {esEdicion ? "Editar juego" : "Nuevo juego"}
           </h2>
           <p className="mt-1 text-sm text-slate-400">
             {esEdicion
-              ? 'Se cargaron todos los datos del juego, incluida la ficha completa.'
-              : 'Completa la información para registrar un nuevo juego.'}
+              ? "Se cargaron todos los datos del juego, incluida la ficha completa."
+              : "Completa la información para registrar un nuevo juego."}
           </p>
         </div>
         <button
@@ -443,78 +439,14 @@ function AdminJuegoForm({
           />
         </div>
 
-        <div className="rounded-xl border border-white/10 bg-slate-950/40 p-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h3 className="text-sm font-semibold text-white">Galería</h3>
-              <p className="mt-1 text-xs text-slate-500">
-                Agrega o quita las URLs de las imágenes de la galería.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={handleAgregarImagen}
-              className="rounded-xl border border-indigo-400/30 bg-indigo-500/10 px-3 py-2 text-xs font-semibold text-indigo-200 transition hover:bg-indigo-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-            >
-              Agregar imagen
-            </button>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {form.galeria.map((url, index) => (
-              <div key={index}>
-                <div className="flex items-start gap-2">
-                  <div className="flex-1">
-                    <label
-                      htmlFor={`galeria-${index}`}
-                      className="sr-only"
-                    >
-                      Imagen {index + 1} de la galería
-                    </label>
-                    <input
-                      id={`galeria-${index}`}
-                      name={`galeria-${index}`}
-                      type="text"
-                      value={url}
-                      onChange={(event) =>
-                        handleGaleriaChange(index, event.target.value)
-                      }
-                      maxLength={GALERIA_IMAGEN_MAX_LENGTH}
-                      placeholder="https://... o img/galeria.jpg"
-                      aria-invalid={Boolean(galeriaErrors[index])}
-                      aria-describedby={
-                        galeriaErrors[index]
-                          ? `galeria-${index}-error`
-                          : undefined
-                      }
-                      className={inputClasses(
-                        Boolean(galeriaErrors[index]),
-                      )}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleQuitarImagen(index)}
-                    aria-label={`Quitar imagen ${index + 1} de la galería`}
-                    className="mt-0.5 rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-xs font-semibold text-rose-200 transition hover:border-rose-400/40 hover:bg-rose-500/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-                  >
-                    Quitar
-                  </button>
-                </div>
-                <FieldError
-                  id={`galeria-${index}-error`}
-                  message={galeriaErrors[index]}
-                />
-              </div>
-            ))}
-          </div>
-
-          {errors.galeria && (
-            <p role="alert" className="mt-3 text-xs text-rose-300">
-              {errors.galeria}
-            </p>
-          )}
-        </div>
+        <AdminJuegoGaleria
+          galeria={form.galeria}
+          galeriaErrors={galeriaErrors}
+          errorGeneral={errors.galeria}
+          onCambiar={handleGaleriaChange}
+          onAgregar={handleAgregarImagen}
+          onQuitar={handleQuitarImagen}
+        />
 
         <div className="flex flex-wrap justify-end gap-3 border-t border-white/10 pt-5">
           <button
@@ -530,16 +462,12 @@ function AdminJuegoForm({
             disabled={isSubmitting}
             className="rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isSubmitting
-              ? 'Guardando...'
-              : esEdicion
-                ? 'Guardar cambios'
-                : 'Crear juego'}
+            {getSubmitLabel(isSubmitting, esEdicion)}
           </button>
         </div>
       </form>
     </section>
-  )
+  );
 }
 
-export default AdminJuegoForm
+export default AdminJuegoForm;

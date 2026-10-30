@@ -1,31 +1,31 @@
-const SESSION_KEY = 'vj-session'
+const SESSION_KEY = "vj-session";
 
 export function getSession() {
-  if (typeof window === 'undefined') {
-    return null
+  if (typeof window === "undefined") {
+    return null;
   }
 
   try {
-    const raw = window.localStorage.getItem(SESSION_KEY)
+    const raw = window.localStorage.getItem(SESSION_KEY);
     if (!raw) {
-      return null
+      return null;
     }
 
-    const session = JSON.parse(raw)
-    if (!session || typeof session.token !== 'string' || !session.token) {
-      return null
+    const session = JSON.parse(raw);
+    if (!session || typeof session.token !== "string" || !session.token) {
+      return null;
     }
 
-    return session
+    return session;
   } catch {
-    return null
+    return null;
   }
 }
 
 export function saveSession(session) {
-  window.localStorage.setItem(SESSION_KEY, JSON.stringify(session))
+  window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
 }
 
 export function clearSession() {
-  window.localStorage.removeItem(SESSION_KEY)
+  window.localStorage.removeItem(SESSION_KEY);
 }
