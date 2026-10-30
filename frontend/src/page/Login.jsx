@@ -64,7 +64,7 @@ function Login() {
           </div>
           <div>
             <p className="text-xs font-semibold tracking-[0.2em] text-indigo-300 uppercase">
-              Videojuegos
+              Videojuegos cheveres
             </p>
             <p className="text-xs text-slate-400">Tu cuenta de jugador</p>
           </div>
