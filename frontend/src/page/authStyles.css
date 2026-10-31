@@ -1,0 +1,249 @@
+.auth-page {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 28rem;
+  padding: 2rem;
+  border: 1px solid rgba(0, 240, 255, 0.55);
+  border-radius: 6px;
+  background: rgba(7, 4, 26, 0.82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 18px rgba(0, 240, 255, 0.28),
+    0 0 38px rgba(255, 0, 230, 0.2),
+    inset 0 0 24px rgba(0, 240, 255, 0.05);
+}
+
+.auth-card--wide {
+  max-width: 34rem;
+}
+
+.auth-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.auth-badge {
+  display: flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 240, 255, 0.65);
+  border-radius: 4px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 240, 255, 0.2),
+    rgba(255, 0, 230, 0.2)
+  );
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: 0.55rem;
+  color: #ffffff;
+  text-shadow: 0 0 8px #00f0ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+}
+
+.auth-kicker {
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Code", "Courier New", monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ff9df6;
+  text-shadow: 0 0 8px rgba(255, 0, 230, 0.5);
+}
+
+.auth-caption {
+  margin: 0.25rem 0 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.auth-title {
+  margin: 1.5rem 0 0;
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: clamp(0.95rem, 4vw, 1.3rem);
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  color: #7df9ff;
+  text-shadow:
+    0 0 8px rgba(0, 240, 255, 0.8),
+    0 0 18px rgba(0, 240, 255, 0.45),
+    2px 2px 0 #ff00e6;
+}
+
+.auth-subtitle {
+  margin: 0.85rem 0 0;
+  font-family: ui-monospace, "Cascadia Code", "Courier New", monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c9a7ff;
+  text-shadow: 0 0 10px rgba(255, 0, 230, 0.45);
+}
+
+.auth-card label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: ui-monospace, "Cascadia Code", "Courier New", monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8ff9ff;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.35);
+}
+
+.auth-card input {
+  border: 1px solid rgba(0, 240, 255, 0.28);
+  border-radius: 4px;
+  background-color: rgba(2, 6, 23, 0.8);
+  color: #e6fbff;
+  caret-color: #00f0ff;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.auth-card input::placeholder {
+  color: #64748b;
+}
+
+.auth-card input:hover {
+  border-color: rgba(0, 240, 255, 0.45);
+}
+
+.auth-card input:focus {
+  border-color: #00f0ff;
+  outline: 2px solid rgba(0, 240, 255, 0.8);
+  outline-offset: 1px;
+  background-color: rgba(2, 6, 23, 0.95);
+  box-shadow:
+    0 0 0 1px #00f0ff,
+    0 0 14px rgba(0, 240, 255, 0.4),
+    0 0 28px rgba(255, 0, 230, 0.16);
+}
+
+.auth-card input[aria-invalid="true"] {
+  border-color: #ff4d6d;
+  box-shadow:
+    0 0 0 1px rgba(255, 77, 109, 0.55),
+    0 0 14px rgba(255, 77, 109, 0.32);
+}
+
+.auth-card input[aria-invalid="true"]:focus {
+  border-color: #ff4d6d;
+  box-shadow:
+    0 0 0 1px #ff4d6d,
+    0 0 16px rgba(255, 77, 109, 0.45);
+}
+
+.auth-card input[type="date"] {
+  color-scheme: dark;
+}
+
+.auth-feedback {
+  margin-top: 1.25rem;
+  border: 1px solid rgba(255, 77, 109, 0.55);
+  border-radius: 4px;
+  background: rgba(255, 77, 109, 0.12);
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  color: #ffb3c1;
+  box-shadow: 0 0 14px rgba(255, 77, 109, 0.2);
+}
+
+.auth-button {
+  display: block;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(0, 240, 255, 0.6);
+  border-radius: 4px;
+  background: linear-gradient(135deg, #00f0ff 0%, #7c3aed 48%, #ff00e6 100%);
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: 0.68rem;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  color: #06021a;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  box-shadow:
+    0 0 16px rgba(0, 240, 255, 0.35),
+    0 0 26px rgba(255, 0, 230, 0.25);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.auth-button:hover:not(:disabled) {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 22px rgba(0, 240, 255, 0.55),
+    0 0 38px rgba(255, 0, 230, 0.45);
+}
+
+.auth-button:focus-visible {
+  outline: 2px solid #00f0ff;
+  outline-offset: 3px;
+}
+
+.auth-button:disabled {
+  cursor: not-allowed;
+  filter: saturate(0.6);
+  opacity: 0.6;
+}
+
+.auth-footer {
+  margin-top: 1.25rem;
+  text-align: center;
+  font-family: ui-monospace, "Cascadia Code", "Courier New", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.auth-link {
+  font-weight: 700;
+  color: #ff9df6;
+  text-decoration: none;
+  text-shadow: 0 0 10px rgba(255, 0, 230, 0.5);
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease;
+}
+
+.auth-link:hover {
+  color: #ffffff;
+  text-shadow: 0 0 12px #ff00e6;
+}
+
+.auth-link:focus-visible {
+  outline: 2px solid #00f0ff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
+}

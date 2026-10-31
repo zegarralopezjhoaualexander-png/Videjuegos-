@@ -1,0 +1,152 @@
+.pm-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 30%, #1a0b3d 0%, #07021a 70%);
+}
+
+.pm-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      rgba(0, 255, 255, 0.08) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 0, 255, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: pm-grid-move 8s linear infinite;
+}
+
+@keyframes pm-grid-move {
+  to {
+    background-position:
+      0 48px,
+      48px 0;
+  }
+}
+
+.pm-lane {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 44px;
+  transform: translateY(-50%);
+}
+
+.pm-lane--rev {
+  transform: translateY(-50%) scaleX(-1);
+}
+
+.pm-dots {
+  position: absolute;
+  inset: 0;
+  opacity: 0.7;
+  background: radial-gradient(circle, #ffd84d 0 3px, transparent 3.5px) 0 50% /
+    36px 100% repeat-x;
+}
+
+.pm-runner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  animation: pm-run linear infinite;
+}
+
+@keyframes pm-run {
+  from {
+    transform: translateX(-260px);
+  }
+  to {
+    transform: translateX(calc(100vw + 60px));
+  }
+}
+
+.pm-pacman {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffd84d;
+  box-shadow: 0 0 18px rgba(255, 216, 77, 0.8);
+  animation: pm-chomp 0.35s linear infinite;
+}
+
+@keyframes pm-chomp {
+  0%,
+  100% {
+    clip-path: polygon(
+      100% 25%,
+      50% 50%,
+      100% 75%,
+      100% 100%,
+      0 100%,
+      0 0,
+      100% 0
+    );
+  }
+  50% {
+    clip-path: polygon(
+      100% 50%,
+      50% 50%,
+      100% 50%,
+      100% 100%,
+      0 100%,
+      0 0,
+      100% 0
+    );
+  }
+}
+
+.pm-ghost {
+  position: relative;
+  width: 34px;
+  height: 38px;
+  background: var(--ghost);
+  border-radius: 17px 17px 4px 4px;
+  box-shadow: 0 0 14px var(--ghost);
+  animation: pm-bob 0.5s ease-in-out infinite alternate;
+}
+
+.pm-ghost::before,
+.pm-ghost::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  width: 8px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 3px 0 0 #1a1a6e;
+}
+
+.pm-ghost::before {
+  left: 6px;
+}
+
+.pm-ghost::after {
+  right: 6px;
+}
+
+@keyframes pm-bob {
+  to {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-grid,
+  .pm-runner,
+  .pm-pacman,
+  .pm-ghost {
+    animation: none;
+  }
+
+  .pm-runner {
+    transform: translateX(20vw);
+  }
+}
