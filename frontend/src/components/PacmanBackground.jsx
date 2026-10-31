@@ -27,7 +27,11 @@ export default function PacmanBackground() {
           >
             <span className="pm-pacman" />
             {GHOSTS.map((color) => (
-              <span key={color} className="pm-ghost" style={{ "--ghost": color }} />
+              <span
+                key={color}
+                className="pm-ghost"
+                style={{ "--ghost": color }}
+              />
             ))}
           </div>
         </div>

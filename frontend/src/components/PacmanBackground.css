@@ -10,14 +10,21 @@
 .pm-grid {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+  background-image: linear-gradient(
+      rgba(0, 255, 255, 0.08) 1px,
+      transparent 1px
+    ),
     linear-gradient(90deg, rgba(255, 0, 255, 0.08) 1px, transparent 1px);
   background-size: 48px 48px;
   animation: pm-grid-move 8s linear infinite;
 }
+
 @keyframes pm-grid-move {
-  to { background-position: 0 48px, 48px 0; }
+  to {
+    background-position:
+      0 48px,
+      48px 0;
+  }
 }
 
 .pm-lane {
@@ -27,13 +34,17 @@
   height: 44px;
   transform: translateY(-50%);
 }
-.pm-lane--rev { transform: translateY(-50%) scaleX(-1); }
+
+.pm-lane--rev {
+  transform: translateY(-50%) scaleX(-1);
+}
 
 .pm-dots {
   position: absolute;
   inset: 0;
   opacity: 0.7;
-  background: radial-gradient(circle, #ffd84d 0 3px, transparent 3.5px) 0 50% / 36px 100% repeat-x;
+  background: radial-gradient(circle, #ffd84d 0 3px, transparent 3.5px) 0 50% /
+    36px 100% repeat-x;
 }
 
 .pm-runner {
@@ -46,9 +57,14 @@
   gap: 14px;
   animation: pm-run linear infinite;
 }
+
 @keyframes pm-run {
-  from { transform: translateX(-260px); }
-  to { transform: translateX(calc(100vw + 60px)); }
+  from {
+    transform: translateX(-260px);
+  }
+  to {
+    transform: translateX(calc(100vw + 60px));
+  }
 }
 
 .pm-pacman {
@@ -59,9 +75,31 @@
   box-shadow: 0 0 18px rgba(255, 216, 77, 0.8);
   animation: pm-chomp 0.35s linear infinite;
 }
+
 @keyframes pm-chomp {
-  0%, 100% { clip-path: polygon(100% 25%, 50% 50%, 100% 75%, 100% 100%, 0 100%, 0 0, 100% 0); }
-  50% { clip-path: polygon(100% 50%, 50% 50%, 100% 50%, 100% 100%, 0 100%, 0 0, 100% 0); }
+  0%,
+  100% {
+    clip-path: polygon(
+      100% 25%,
+      50% 50%,
+      100% 75%,
+      100% 100%,
+      0 100%,
+      0 0,
+      100% 0
+    );
+  }
+  50% {
+    clip-path: polygon(
+      100% 50%,
+      50% 50%,
+      100% 50%,
+      100% 100%,
+      0 100%,
+      0 0,
+      100% 0
+    );
+  }
 }
 
 .pm-ghost {
@@ -73,6 +111,7 @@
   box-shadow: 0 0 14px var(--ghost);
   animation: pm-bob 0.5s ease-in-out infinite alternate;
 }
+
 .pm-ghost::before,
 .pm-ghost::after {
   content: "";
@@ -84,13 +123,30 @@
   background: #fff;
   box-shadow: inset 3px 0 0 #1a1a6e;
 }
-.pm-ghost::before { left: 6px; }
-.pm-ghost::after { right: 6px; }
+
+.pm-ghost::before {
+  left: 6px;
+}
+
+.pm-ghost::after {
+  right: 6px;
+}
+
 @keyframes pm-bob {
-  to { transform: translateY(-3px); }
+  to {
+    transform: translateY(-3px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pm-grid, .pm-runner, .pm-pacman, .pm-ghost { animation: none; }
-  .pm-runner { transform: translateX(20vw); }
+  .pm-grid,
+  .pm-runner,
+  .pm-pacman,
+  .pm-ghost {
+    animation: none;
+  }
+
+  .pm-runner {
+    transform: translateX(20vw);
+  }
 }

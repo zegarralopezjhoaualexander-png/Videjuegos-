@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../api/auth.js";
 import { useAuth } from "../auth/useAuth.js";
 import FieldError from "../components/FieldError.jsx";
-import PacmanBackground from "../components/PacmanBackground";
+import PacmanBackground from "../components/PacmanBackground.jsx";
 import PasswordInput from "../components/PasswordInput.jsx";
 import "./authStyles.css";
 import { inputClasses } from "./formStyles.js";
@@ -79,7 +79,12 @@ function Login() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            aria-label="Formulario de inicio de sesión"
+            className="mt-6 space-y-5"
+          >
             <div>
               <label
                 htmlFor="identificador"
@@ -94,7 +99,7 @@ function Login() {
                 value={form.identificador}
                 onChange={handleChange}
                 autoComplete="username"
-                placeholder="usuario@dominio.com o tu usuario"
+                placeholder="tu usuario o correo electrónico"
                 aria-invalid={Boolean(errors.identificador)}
                 aria-describedby={
                   errors.identificador ? "identificador-error" : undefined
