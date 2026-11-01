@@ -3,7 +3,7 @@ import {
   PASSWORD_MIN_LENGTH,
   getPasswordChecks,
   getPasswordStrength,
-} from "../page/registerValidation.js";
+} from "../../pages/auth/registerValidation.js";
 
 const PASSWORD_REQUIREMENTS = [
   {

@@ -1,4 +1,4 @@
-import { inputClasses } from "../page/formStyles.js";
+import { inputClasses } from "../../styles/formStyles.js";
 import FieldError from "./FieldError.jsx";
 
 function PasswordInput({

@@ -1,5 +1,5 @@
-import JuegoThumb from "../components/JuegoThumb.jsx";
-import { formatPrice } from "../utils/format.js";
+import JuegoThumb from "../../components/games/JuegoThumb.jsx";
+import { formatPrice } from "../../utils/format.js";
 
 const STOCK_FORMATTER = new Intl.NumberFormat("es-MX");
 

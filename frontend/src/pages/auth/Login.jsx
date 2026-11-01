@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../api/auth.js";
-import { useAuth } from "../auth/useAuth.js";
-import FieldError from "../components/FieldError.jsx";
-import PacmanBackground from "../components/PacmanBackground.jsx";
-import PasswordInput from "../components/PasswordInput.jsx";
+import { login } from "../../api/auth.js";
+import { useAuth } from "../../auth/useAuth.js";
+import PacmanBackground from "../../components/effects/PacmanBackground.jsx";
+import FieldError from "../../components/forms/FieldError.jsx";
+import PasswordInput from "../../components/forms/PasswordInput.jsx";
+import { BRAND_MARK, SITE_NAME } from "../../utils/siteContent.js";
 import "./authStyles.css";
-import { inputClasses } from "./formStyles.js";
 import { validateLogin } from "./loginValidation.js";
 
 function Login() {
@@ -17,6 +17,7 @@ function Login() {
   const [feedback, setFeedback] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shake, setShake] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -29,11 +30,14 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    setShake(false);
+
     const { errors: nextErrors, isValid } = validateLogin(form);
     setErrors(nextErrors);
     setFeedback("");
 
     if (!isValid) {
+      setShake(true);
       return;
     }
 
@@ -52,6 +56,7 @@ function Login() {
       setFeedback(
         error?.message || "No se pudo iniciar sesión. Inténtalo de nuevo."
       );
+      setShake(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -61,11 +66,20 @@ function Login() {
     <>
       <PacmanBackground />
       <main className="auth-page">
-        <section className="auth-card">
+        <section
+          className={`auth-card neon-panel hud-corners${shake ? " auth-card--shake" : ""}`}
+          onAnimationEnd={(event) => {
+            if (event.animationName === "auth-shake") {
+              setShake(false);
+            }
+          }}
+        >
           <div className="auth-header">
-            <div className="auth-badge">VJ</div>
+            <div className="brand-badge" aria-hidden="true">
+              {BRAND_MARK}
+            </div>
             <div>
-              <p className="auth-kicker">Videojuegos cheveres</p>
+              <p className="auth-kicker">{SITE_NAME}</p>
               <p className="auth-caption">Tu cuenta de jugador</p>
             </div>
           </div>
@@ -83,13 +97,10 @@ function Login() {
             onSubmit={handleSubmit}
             noValidate
             aria-label="Formulario de inicio de sesión"
-            className="mt-6 space-y-5"
+            className="auth-form"
           >
-            <div>
-              <label
-                htmlFor="identificador"
-                className="mb-2 block text-sm font-medium text-slate-200"
-              >
+            <div className="auth-field">
+              <label htmlFor="identificador">
                 Correo electrónico o usuario
               </label>
               <input
@@ -104,7 +115,6 @@ function Login() {
                 aria-describedby={
                   errors.identificador ? "identificador-error" : undefined
                 }
-                className={inputClasses(Boolean(errors.identificador))}
               />
               <FieldError
                 id="identificador-error"
@@ -128,16 +138,18 @@ function Login() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="auth-button"
+              className="neon-button neon-button--primary"
             >
-              {isSubmitting ? "CARGANDO..." : "▶ START"}
+              <span className="neon-button__label">
+                {isSubmitting ? "CARGANDO..." : "▶ START"}
+              </span>
             </button>
           </form>
 
           <p className="auth-footer">
             ¿No tienes cuenta?{" "}
-            <Link to="/registro" className="auth-link">
-              Crear cuenta
+            <Link to="/registro" className="neon-link">
+              NUEVO JUGADOR
             </Link>
           </p>
         </section>

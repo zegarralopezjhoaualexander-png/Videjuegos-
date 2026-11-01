@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { resolvePublicImage } from "../api/juegos.js";
+import { resolvePublicImage } from "../../api/juegos.js";
 import {
   formatAvailability,
   formatDate,
@@ -8,7 +8,7 @@ import {
   formatScore,
   getInitials,
   getStockClasses,
-} from "../utils/format.js";
+} from "../../utils/format.js";
 
 const SECTION_CLASSES =
   "rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur sm:p-8";

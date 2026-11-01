@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registro } from "../api/auth.js";
-import { useAuth } from "../auth/useAuth.js";
-import FieldError from "../components/FieldError.jsx";
-import PacmanBackground from "../components/PacmanBackground.jsx";
-import PasswordInput from "../components/PasswordInput.jsx";
-import PasswordStrength from "../components/PasswordStrength.jsx";
-import { getYesterdayInputValue } from "../utils/date.js";
+import { registro } from "../../api/auth.js";
+import { useAuth } from "../../auth/useAuth.js";
+import PacmanBackground from "../../components/effects/PacmanBackground.jsx";
+import FieldError from "../../components/forms/FieldError.jsx";
+import PasswordInput from "../../components/forms/PasswordInput.jsx";
+import PasswordStrength from "../../components/forms/PasswordStrength.jsx";
+import { getYesterdayInputValue } from "../../utils/date.js";
+import { BRAND_MARK, SITE_NAME } from "../../utils/siteContent.js";
 import "./authStyles.css";
-import { inputClasses } from "./formStyles.js";
 import { NAME_MAX_LENGTH, validateRegistro } from "./registerValidation.js";
 
 const INITIAL_FORM = {
@@ -78,11 +78,13 @@ function Registro() {
     <>
       <PacmanBackground />
       <main className="auth-page">
-        <section className="auth-card auth-card--wide">
+        <section className="auth-card neon-panel hud-corners">
           <div className="auth-header">
-            <div className="auth-badge">VJ</div>
+            <div className="brand-badge" aria-hidden="true">
+              {BRAND_MARK}
+            </div>
             <div>
-              <p className="auth-kicker">Videojuegos cheveres</p>
+              <p className="auth-kicker">{SITE_NAME}</p>
               <p className="auth-caption">Tu cuenta de jugador</p>
             </div>
           </div>
@@ -100,16 +102,11 @@ function Registro() {
             onSubmit={handleSubmit}
             noValidate
             aria-label="Formulario de registro"
-            className="mt-6 space-y-5"
+            className="auth-form"
           >
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="nombre"
-                  className="mb-2 block text-sm font-medium text-slate-200"
-                >
-                  Nombre
-                </label>
+            <div className="auth-row">
+              <div className="auth-field">
+                <label htmlFor="nombre">Nombre</label>
                 <input
                   id="nombre"
                   name="nombre"
@@ -121,18 +118,12 @@ function Registro() {
                   placeholder="Ana"
                   aria-invalid={Boolean(errors.nombre)}
                   aria-describedby={errors.nombre ? "nombre-error" : undefined}
-                  className={inputClasses(Boolean(errors.nombre))}
                 />
                 <FieldError id="nombre-error" message={errors.nombre} />
               </div>
 
-              <div>
-                <label
-                  htmlFor="apellido"
-                  className="mb-2 block text-sm font-medium text-slate-200"
-                >
-                  Apellido
-                </label>
+              <div className="auth-field">
+                <label htmlFor="apellido">Apellido</label>
                 <input
                   id="apellido"
                   name="apellido"
@@ -146,19 +137,13 @@ function Registro() {
                   aria-describedby={
                     errors.apellido ? "apellido-error" : undefined
                   }
-                  className={inputClasses(Boolean(errors.apellido))}
                 />
                 <FieldError id="apellido-error" message={errors.apellido} />
               </div>
             </div>
 
-            <div>
-              <label
-                htmlFor="fechaNacimiento"
-                className="mb-2 block text-sm font-medium text-slate-200"
-              >
-                Fecha de nacimiento
-              </label>
+            <div className="auth-field">
+              <label htmlFor="fechaNacimiento">Fecha de nacimiento</label>
               <input
                 id="fechaNacimiento"
                 name="fechaNacimiento"
@@ -171,7 +156,6 @@ function Registro() {
                 aria-describedby={
                   errors.fechaNacimiento ? "fecha-nacimiento-error" : undefined
                 }
-                className={inputClasses(Boolean(errors.fechaNacimiento))}
               />
               <FieldError
                 id="fecha-nacimiento-error"
@@ -179,13 +163,8 @@ function Registro() {
               />
             </div>
 
-            <div>
-              <label
-                htmlFor="correo"
-                className="mb-2 block text-sm font-medium text-slate-200"
-              >
-                Correo electrónico
-              </label>
+            <div className="auth-field">
+              <label htmlFor="correo">Correo electrónico</label>
               <input
                 id="correo"
                 name="correo"
@@ -197,12 +176,11 @@ function Registro() {
                 placeholder="tu correo electrónico"
                 aria-invalid={Boolean(errors.correo)}
                 aria-describedby={errors.correo ? "correo-error" : undefined}
-                className={inputClasses(Boolean(errors.correo))}
               />
               <FieldError id="correo-error" message={errors.correo} />
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="auth-row">
               <PasswordInput
                 id="contrasena"
                 name="contrasena"
@@ -235,16 +213,18 @@ function Registro() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="auth-button"
+              className="neon-button neon-button--primary"
             >
-              {isSubmitting ? "CARGANDO..." : "NUEVO JUGADOR"}
+              <span className="neon-button__label">
+                {isSubmitting ? "CARGANDO..." : "▶ CREAR CUENTA"}
+              </span>
             </button>
           </form>
 
           <p className="auth-footer">
             ¿Ya tienes cuenta?{" "}
-            <Link to="/login" className="auth-link">
-              Iniciar sesión
+            <Link to="/login" className="neon-link">
+              INICIAR SESIÓN
             </Link>
           </p>
         </section>

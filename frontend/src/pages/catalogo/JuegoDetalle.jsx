@@ -3,10 +3,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   fetchCalificaciones,
   guardarMiCalificacion,
-} from "../api/calificaciones.js";
-import { fetchJuegoById } from "../api/juegos.js";
-import { useAuth } from "../auth/useAuth.js";
-import { getYouTubeTrailer } from "../utils/youtube.js";
+} from "../../api/calificaciones.js";
+import { fetchJuegoById } from "../../api/juegos.js";
+import { useAuth } from "../../auth/useAuth.js";
+import { getYouTubeTrailer } from "../../utils/youtube.js";
 import {
   CalificacionSection,
   GaleriaSection,

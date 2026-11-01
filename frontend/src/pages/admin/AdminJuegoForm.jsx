@@ -12,11 +12,11 @@ import {
   toPayload,
   validateJuegoForm,
 } from "./adminJuegoValidation.js";
-import { resolvePublicImage } from "../api/juegos.js";
-import FieldError from "../components/FieldError.jsx";
-import { getYesterdayInputValue } from "../utils/date.js";
+import { resolvePublicImage } from "../../api/juegos.js";
+import FieldError from "../../components/forms/FieldError.jsx";
+import { getYesterdayInputValue } from "../../utils/date.js";
 import AdminJuegoGaleria from "./AdminJuegoGaleria.jsx";
-import { inputClasses } from "./formStyles.js";
+import { inputClasses } from "../../styles/formStyles.js";
 
 const MAX_DATE = getYesterdayInputValue();
 
