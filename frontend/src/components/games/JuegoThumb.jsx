@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { resolvePublicImage } from "../api/juegos.js";
-import { getInitials } from "../utils/format.js";
+import { resolvePublicImage } from "../../api/juegos.js";
+import { getInitials } from "../../utils/format.js";
 
 function JuegoThumb({ juego, className = "h-12 w-16" }) {
   const [imageError, setImageError] = useState(false);

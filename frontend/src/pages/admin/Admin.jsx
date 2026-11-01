@@ -4,13 +4,13 @@ import {
   actualizarJuego,
   crearJuego,
   eliminarJuego,
-} from "../api/adminJuegos.js";
-import { fetchJuegoById, fetchJuegos } from "../api/juegos.js";
-import { useAuth } from "../auth/useAuth.js";
-import AppHeader from "../components/AppHeader.jsx";
+} from "../../api/adminJuegos.js";
+import { fetchJuegoById, fetchJuegos } from "../../api/juegos.js";
+import { useAuth } from "../../auth/useAuth.js";
+import AppHeader from "../../components/layout/AppHeader.jsx";
 import AdminJuegoForm from "./AdminJuegoForm.jsx";
 import AdminJuegosList from "./AdminJuegosList.jsx";
-import { inputClasses } from "./formStyles.js";
+import { inputClasses } from "../../styles/formStyles.js";
 
 function NoPermission() {
   return (

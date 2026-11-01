@@ -1,4 +1,4 @@
-import { parseDateInput } from "../utils/date.js";
+import { parseDateInput } from "../../utils/date.js";
 import { validateEmail } from "./loginValidation.js";
 
 export const NAME_MAX_LENGTH = 50;

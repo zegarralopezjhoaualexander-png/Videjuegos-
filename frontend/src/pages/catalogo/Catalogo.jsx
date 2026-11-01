@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { fetchJuegos, resolvePublicImage } from "../api/juegos.js";
-import { useAuth } from "../auth/useAuth.js";
-import AppHeader from "../components/AppHeader.jsx";
-import { formatScore, getInitials } from "../utils/format.js";
-import { inputClasses } from "./formStyles.js";
+import { fetchJuegos, resolvePublicImage } from "../../api/juegos.js";
+import { useAuth } from "../../auth/useAuth.js";
+import AppHeader from "../../components/layout/AppHeader.jsx";
+import { formatScore, getInitials } from "../../utils/format.js";
+import { inputClasses } from "../../styles/formStyles.js";
 
 const SKELETON_ITEMS = Array.from({ length: 6 }, (_, index) => index);
 

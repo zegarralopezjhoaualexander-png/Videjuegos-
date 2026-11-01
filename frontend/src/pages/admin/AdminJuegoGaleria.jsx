@@ -1,6 +1,6 @@
-import FieldError from "../components/FieldError.jsx";
+import FieldError from "../../components/forms/FieldError.jsx";
 import { GALERIA_IMAGEN_MAX_LENGTH } from "./adminJuegoValidation.js";
-import { inputClasses } from "./formStyles.js";
+import { inputClasses } from "../../styles/formStyles.js";
 
 function AdminJuegoGaleria({
   galeria,

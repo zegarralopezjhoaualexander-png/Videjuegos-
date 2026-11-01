@@ -92,12 +92,26 @@ npm run lint     # Análisis con ESLint
 ```text
 frontend/
 ├── src/
-│   ├── api/       # Clientes para consumir la API del backend
-│   ├── auth/      # Contexto de autenticación y rutas protegidas
-│   ├── page/      # Login, registro, catálogo, detalle y administración
-│   ├── App.jsx    # Definición de rutas
-│   └── main.jsx   # Punto de entrada
+│   ├── api/                  # Clientes para consumir la API del backend
+│   ├── assets/               # Recursos importados por la aplicación
+│   ├── auth/                 # Contexto de autenticación y rutas protegidas
+│   ├── components/
+│   │   ├── effects/          # Fondo animado PacmanBackground
+│   │   ├── forms/            # FieldError, PasswordInput, PasswordStrength
+│   │   ├── games/            # JuegoThumb
+│   │   └── layout/           # AppHeader
+│   ├── pages/
+│   │   ├── admin/            # Panel y formularios de administración
+│   │   ├── auth/             # Login, registro, validaciones y authStyles
+│   │   └── catalogo/         # Catálogo, detalle y secciones del juego
+│   ├── styles/               # Estilos compartidos (formStyles)
+│   ├── utils/                # Utilidades de fecha, formato y YouTube
+│   ├── App.css
+│   ├── App.jsx               # Definición de rutas
+│   ├── index.css
+│   └── main.jsx              # Punto de entrada
 ├── public/
+│   └── img/                  # Portadas e imágenes estáticas
 ├── index.html
 └── package.json
 ```

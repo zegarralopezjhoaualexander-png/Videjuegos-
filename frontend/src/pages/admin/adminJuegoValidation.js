@@ -1,4 +1,4 @@
-import { parseDateInput } from "../utils/date.js";
+import { parseDateInput } from "../../utils/date.js";
 
 export const NOMBRE_MAX_LENGTH = 100;
 export const GENERO_MAX_LENGTH = 50;
