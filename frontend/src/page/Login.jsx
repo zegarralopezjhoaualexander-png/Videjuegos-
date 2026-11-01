@@ -3,7 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../api/auth.js";
 import { useAuth } from "../auth/useAuth.js";
 import FieldError from "../components/FieldError.jsx";
+import PacmanBackground from "../components/PacmanBackground.jsx";
 import PasswordInput from "../components/PasswordInput.jsx";
+import "./authStyles.css";
 import { inputClasses } from "./formStyles.js";
 import { validateLogin } from "./loginValidation.js";
 
@@ -56,97 +58,91 @@ function Login() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
-      <section className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur">
-        <div className="flex items-center gap-3">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 to-fuchsia-500 text-sm font-black text-white">
-            VJ
+    <>
+      <PacmanBackground />
+      <main className="auth-page">
+        <section className="auth-card">
+          <div className="auth-header">
+            <div className="auth-badge">VJ</div>
+            <div>
+              <p className="auth-kicker">Videojuegos cheveres</p>
+              <p className="auth-caption">Tu cuenta de jugador</p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-semibold tracking-[0.2em] text-indigo-300 uppercase">
-              Videojuegos cheveres
-            </p>
-            <p className="text-xs text-slate-400">Tu cuenta de jugador</p>
-          </div>
-        </div>
 
-        <h1 className="mt-6 text-2xl font-bold text-white">Iniciar sesión</h1>
-        <p className="mt-1 text-sm text-slate-400">
-          Accede de forma segura para guardar tus datos y gestionar tus compras
-          o preferencias.
-        </p>
+          <h1 className="auth-title">PLAYER 1</h1>
+          <p className="auth-subtitle">Inserta tus datos para continuar</p>
 
-        {feedback && (
-          <div
-            role="alert"
-            aria-live="polite"
-            className="mt-5 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
+          {feedback && (
+            <div role="alert" aria-live="polite" className="auth-feedback">
+              {feedback}
+            </div>
+          )}
+
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            aria-label="Formulario de inicio de sesión"
+            className="mt-6 space-y-5"
           >
-            {feedback}
-          </div>
-        )}
+            <div>
+              <label
+                htmlFor="identificador"
+                className="mb-2 block text-sm font-medium text-slate-200"
+              >
+                Correo electrónico o usuario
+              </label>
+              <input
+                id="identificador"
+                name="identificador"
+                type="text"
+                value={form.identificador}
+                onChange={handleChange}
+                autoComplete="username"
+                placeholder="tu usuario o correo electrónico"
+                aria-invalid={Boolean(errors.identificador)}
+                aria-describedby={
+                  errors.identificador ? "identificador-error" : undefined
+                }
+                className={inputClasses(Boolean(errors.identificador))}
+              />
+              <FieldError
+                id="identificador-error"
+                message={errors.identificador}
+              />
+            </div>
 
-        <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">
-          <div>
-            <label
-              htmlFor="identificador"
-              className="mb-2 block text-sm font-medium text-slate-200"
-            >
-              Correo electrónico o usuario
-            </label>
-            <input
-              id="identificador"
-              name="identificador"
-              type="text"
-              value={form.identificador}
+            <PasswordInput
+              id="contrasena"
+              name="contrasena"
+              label="Contraseña"
+              value={form.contrasena}
               onChange={handleChange}
-              autoComplete="username"
-              placeholder="usuario@dominio.com o tu usuario"
-              aria-invalid={Boolean(errors.identificador)}
-              aria-describedby={
-                errors.identificador ? "identificador-error" : undefined
-              }
-              className={inputClasses(Boolean(errors.identificador))}
+              error={errors.contrasena}
+              autoComplete="current-password"
+              placeholder="Tu contraseña"
+              showPassword={showPassword}
+              onToggle={() => setShowPassword((current) => !current)}
             />
-            <FieldError
-              id="identificador-error"
-              message={errors.identificador}
-            />
-          </div>
 
-          <PasswordInput
-            id="contrasena"
-            name="contrasena"
-            label="Contraseña"
-            value={form.contrasena}
-            onChange={handleChange}
-            error={errors.contrasena}
-            autoComplete="current-password"
-            placeholder="Tu contraseña"
-            showPassword={showPassword}
-            onToggle={() => setShowPassword((current) => !current)}
-          />
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="auth-button"
+            >
+              {isSubmitting ? "CARGANDO..." : "▶ START"}
+            </button>
+          </form>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
-          </button>
-        </form>
-
-        <p className="mt-5 text-center text-sm text-slate-400">
-          ¿No tienes cuenta?{" "}
-          <Link
-            to="/registro"
-            className="font-semibold text-indigo-300 transition hover:text-indigo-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-          >
-            Crear cuenta
-          </Link>
-        </p>
-      </section>
-    </main>
+          <p className="auth-footer">
+            ¿No tienes cuenta?{" "}
+            <Link to="/registro" className="auth-link">
+              Crear cuenta
+            </Link>
+          </p>
+        </section>
+      </main>
+    </>
   );
 }
 
