@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { resolvePublicImage } from "../../api/juegos.js";
+import BotonAgregarCarrito from "../../components/carrito/BotonAgregarCarrito.jsx";
 import {
   formatAvailability,
   formatDate,
@@ -290,6 +291,10 @@ export function JuegoHero({ juego, showImage, onImageError }) {
               >
                 {formatAvailability(juego.stock)}
               </span>
+            </div>
+
+            <div className="mt-4">
+              <BotonAgregarCarrito juego={juego} />
             </div>
           </div>
         </div>

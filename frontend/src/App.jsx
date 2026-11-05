@@ -6,6 +6,7 @@ import Catalogo from "./pages/catalogo/Catalogo.jsx";
 import JuegoDetalle from "./pages/catalogo/JuegoDetalle.jsx";
 import Admin from "./pages/admin/Admin.jsx";
 import Inicio from "./pages/inicio/Inicio.jsx";
+import Carrito from "./pages/carrito/Carrito.jsx";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/juego/:id" element={<JuegoDetalle />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/catalogo" element={<Catalogo />} />
+        <Route path="/carrito" element={<Carrito />} />
         <Route path="/admin" element={<Admin />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
