@@ -1,0 +1,18 @@
+package com.proyecto.backend.repository;
+
+import com.proyecto.backend.model.Calificacion;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
+
+public interface CalificacionRepository extends JpaRepository<Calificacion, Long> {
+
+    Optional<Calificacion> findByVideojuegoIdAndUsuarioId(Long videojuegoId, Long usuarioId);
+
+    long countByVideojuegoId(Long videojuegoId);
+
+    @Query("select avg(c.puntaje) from Calificacion c where c.videojuegoId = :id")
+    Double promedioDe(@Param("id") Long id);
+}
