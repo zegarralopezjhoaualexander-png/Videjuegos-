@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { fetchJuegos, resolvePublicImage } from "../../api/juegos.js";
 import { useAuth } from "../../auth/useAuth.js";
 import AppHeader from "../../components/layout/AppHeader.jsx";
+import BotonAgregarCarrito from "../../components/carrito/BotonAgregarCarrito.jsx";
 import { formatScore, getInitials } from "../../utils/format.js";
 import { inputClasses } from "../../styles/formStyles.js";
 
@@ -11,20 +12,22 @@ const SKELETON_ITEMS = Array.from({ length: 6 }, (_, index) => index);
 function JuegoCard({ juego }) {
   const [imageError, setImageError] = useState(false);
   const showImage = Boolean(juego.imagen) && !imageError;
+  const detalleUrl = `/juego/${encodeURIComponent(juego.id)}`;
 
   return (
-    <Link
-      to={`/juego/${encodeURIComponent(juego.id)}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:border-indigo-400/40 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-    >
-      <div className="relative aspect-video w-full overflow-hidden bg-linear-to-br from-indigo-500/30 via-slate-900 to-fuchsia-500/30">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:border-indigo-400/40 hover:bg-white/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+      <Link
+        to={detalleUrl}
+        aria-label={`Ver detalles de ${juego.titulo}`}
+        className="relative block aspect-video w-full overflow-hidden bg-linear-to-br from-indigo-500/30 via-slate-900 to-fuchsia-500/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+      >
         {showImage ? (
           <img
             src={resolvePublicImage(juego.imagen)}
             alt={`Portada de ${juego.titulo}`}
             loading="lazy"
             onError={() => setImageError(true)}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-2xl font-black tracking-widest text-white/70">
@@ -35,14 +38,19 @@ function JuegoCard({ juego }) {
         <span className="absolute top-3 right-3 rounded-full border border-white/10 bg-slate-950/80 px-2.5 py-1 text-xs font-semibold text-amber-300 backdrop-blur">
           {formatScore(juego.puntuacion, "Sin puntuar")}
         </span>
-      </div>
+      </Link>
 
       <div className="flex flex-1 flex-col gap-3 p-4">
-        <h2 className="line-clamp-2 text-base font-semibold text-white">
-          {juego.titulo}
-        </h2>
+        <Link
+          to={detalleUrl}
+          className="rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+        >
+          <h2 className="line-clamp-2 text-base font-semibold text-white">
+            {juego.titulo}
+          </h2>
+        </Link>
 
-        <div className="mt-auto flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5">
           <span className="rounded-full border border-indigo-400/20 bg-indigo-500/10 px-2.5 py-1 text-xs text-indigo-200">
             {juego.genero || "Sin género"}
           </span>
@@ -50,8 +58,14 @@ function JuegoCard({ juego }) {
             {juego.plataforma || "Sin plataforma"}
           </span>
         </div>
+
+        <BotonAgregarCarrito
+          juego={juego}
+          compacto
+          className="mt-auto pt-1"
+        />
       </div>
-    </Link>
+    </article>
   );
 }
 

@@ -15,15 +15,31 @@ export function formatScore(score, fallback = "") {
   return `${Number.isInteger(score) ? score : score.toFixed(1)}/10`;
 }
 
-export function formatPrice(precio, fallback = "") {
-  if (!Number.isFinite(precio)) {
+export const MONEDA = {
+  locale: "es-MX",
+  currency: "MXN",
+};
+
+const MONEY_FORMATTER = new Intl.NumberFormat(MONEDA.locale, {
+  style: "currency",
+  currency: MONEDA.currency,
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+export function formatMoney(value, fallback = "") {
+  const number =
+    typeof value === "string" && value.trim() !== "" ? Number(value) : value;
+
+  if (!Number.isFinite(number)) {
     return fallback;
   }
 
-  return `$${new Intl.NumberFormat("es-MX", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(precio)}`;
+  return MONEY_FORMATTER.format(number);
+}
+
+export function formatPrice(precio, fallback = "") {
+  return formatMoney(precio, fallback);
 }
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("es-ES", {

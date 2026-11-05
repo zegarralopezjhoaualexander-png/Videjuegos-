@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { login } from "../../api/auth.js";
 import { useAuth } from "../../auth/useAuth.js";
 import PacmanBackground from "../../components/effects/PacmanBackground.jsx";
 import FieldError from "../../components/forms/FieldError.jsx";
 import PasswordInput from "../../components/forms/PasswordInput.jsx";
+import { esRutaInterna } from "../../utils/routing.js";
 import { BRAND_MARK, SITE_NAME } from "../../utils/siteContent.js";
 import "./authStyles.css";
 import { validateLogin } from "./loginValidation.js";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { signIn } = useAuth();
   const [form, setForm] = useState({ identificador: "", contrasena: "" });
   const [errors, setErrors] = useState({});
@@ -50,7 +52,10 @@ function Login() {
       });
 
       signIn(session);
-      navigate("/catalogo", { replace: true });
+      const destino = location.state?.from;
+      navigate(esRutaInterna(destino) ? destino : "/catalogo", {
+        replace: true,
+      });
     } catch (error) {
       setErrors(error?.fieldErrors ?? {});
       setFeedback(

@@ -10,7 +10,7 @@
 - Build: `npm run build` (writes `dist/`)
 - Lint: `npm run lint` (ESLint flat config, ignores `dist`)
 - Preview build: `npm run preview`
-- No test runner, no typecheck script. Don't claim tests ran; verify with `npm run lint` and `npm run build`.
+- Test: `npm test` (Vitest + Testing Library, jsdom). Also verify with `npm run lint` and `npm run build`.
 - Slow Tailwind `vite:css-post` output / `PLUGIN_TIMINGS` notice on build is expected, not an error.
 
 ## Layout
