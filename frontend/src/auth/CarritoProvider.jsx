@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   agregarItem,
   aplicarCodigoCupon,
@@ -26,6 +27,16 @@ function resumenVacio() {
 
 function CarritoProvider({ children }) {
   const { token, signOut } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const ubicacionRef = useRef({
+    pathname: location.pathname,
+    search: location.search,
+  });
+  ubicacionRef.current = {
+    pathname: location.pathname,
+    search: location.search,
+  };
   const [estado, setEstado] = useState(() => ({
     token: null,
     resumen: resumenVacio(),
@@ -33,6 +44,19 @@ function CarritoProvider({ children }) {
     accion: null,
     error: "",
   }));
+
+  const manejarSesionExpirada = useCallback(async () => {
+    const { pathname, search } = ubicacionRef.current;
+
+    await signOut();
+
+    if (pathname !== "/login") {
+      navigate("/login", {
+        replace: true,
+        state: { from: `${pathname}${search}` },
+      });
+    }
+  }, [signOut, navigate]);
 
   const resumen =
     token && estado.token === token ? estado.resumen : RESUMEN_VACIO;
@@ -69,7 +93,7 @@ function CarritoProvider({ children }) {
         }
 
         if (requestError.status === 401) {
-          await signOut();
+          await manejarSesionExpirada();
           return;
         }
 
@@ -87,7 +111,7 @@ function CarritoProvider({ children }) {
       active = false;
       controller.abort();
     };
-  }, [token, signOut]);
+  }, [token, manejarSesionExpirada]);
 
   const ejecutar = useCallback(
     async (nombreAccion, peticion) => {
@@ -115,7 +139,7 @@ function CarritoProvider({ children }) {
       } catch (requestError) {
         if (requestError.status === 401) {
           setEstado((current) => ({ ...current, accion: null }));
-          await signOut();
+          await manejarSesionExpirada();
         } else {
           setEstado((current) => ({
             ...current,
@@ -128,7 +152,7 @@ function CarritoProvider({ children }) {
         throw requestError;
       }
     },
-    [token, signOut]
+    [token, manejarSesionExpirada]
   );
 
   const agregar = useCallback(
@@ -190,7 +214,7 @@ function CarritoProvider({ children }) {
     } catch (requestError) {
       if (requestError.status === 401) {
         setEstado((current) => ({ ...current, cargando: false }));
-        await signOut();
+        await manejarSesionExpirada();
         return;
       }
 
@@ -202,7 +226,7 @@ function CarritoProvider({ children }) {
           "No se pudo cargar el carrito. Inténtalo de nuevo.",
       }));
     }
-  }, [token, signOut]);
+  }, [token, manejarSesionExpirada]);
 
   const estaEnCarrito = useCallback(
     (juegoId) =>

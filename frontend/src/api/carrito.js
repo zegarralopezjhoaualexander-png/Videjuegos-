@@ -4,9 +4,27 @@ import { resolvePublicImage } from "./juegos.js";
 const CARRITO_URL = `${API_BASE}/api/tienda/carrito`;
 const NETWORK_MESSAGE =
   "No se pudo conectar con el carrito. Verifica tu conexión e inténtalo de nuevo.";
+const CONFLICTO_GENERICO =
+  "No se pudo agregar el videojuego: ya está en tu carrito o en tu biblioteca.";
 
-function carritoError(response) {
-  return parseErrorResponse(response, {
+function mensajeConflicto(mensaje) {
+  if (!mensaje || mensaje === CONFLICTO_GENERICO) {
+    return CONFLICTO_GENERICO;
+  }
+
+  if (/posees|biblioteca/i.test(mensaje)) {
+    return "Ya posees este videojuego";
+  }
+
+  if (/carrito/i.test(mensaje)) {
+    return "Este videojuego ya está en tu carrito";
+  }
+
+  return CONFLICTO_GENERICO;
+}
+
+async function carritoError(response) {
+  const error = await parseErrorResponse(response, {
     fallback: (status) => {
       if (status === 401) {
         return "Tu sesión expiró. Inicia sesión de nuevo.";
@@ -17,7 +35,7 @@ function carritoError(response) {
       }
 
       if (status === 409) {
-        return "No se pudo agregar el videojuego al carrito.";
+        return CONFLICTO_GENERICO;
       }
 
       if (status === 400) {
@@ -27,6 +45,12 @@ function carritoError(response) {
       return "Ocurrió un error al procesar el carrito. Inténtalo de nuevo.";
     },
   });
+
+  if (response.status === 409) {
+    error.message = mensajeConflicto(error.message);
+  }
+
+  return error;
 }
 
 function request(url, options) {
