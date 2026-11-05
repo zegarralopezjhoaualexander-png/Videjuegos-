@@ -5,6 +5,7 @@ import { useAuth } from "../../auth/useAuth.js";
 import PacmanBackground from "../../components/effects/PacmanBackground.jsx";
 import FieldError from "../../components/forms/FieldError.jsx";
 import PasswordInput from "../../components/forms/PasswordInput.jsx";
+import { esRutaInterna } from "../../utils/routing.js";
 import { BRAND_MARK, SITE_NAME } from "../../utils/siteContent.js";
 import "./authStyles.css";
 import { validateLogin } from "./loginValidation.js";
@@ -52,12 +53,9 @@ function Login() {
 
       signIn(session);
       const destino = location.state?.from;
-      navigate(
-        typeof destino === "string" && destino.startsWith("/")
-          ? destino
-          : "/catalogo",
-        { replace: true }
-      );
+      navigate(esRutaInterna(destino) ? destino : "/catalogo", {
+        replace: true,
+      });
     } catch (error) {
       setErrors(error?.fieldErrors ?? {});
       setFeedback(
