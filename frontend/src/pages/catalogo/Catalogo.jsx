@@ -5,6 +5,7 @@ import { useAuth } from "../../auth/useAuth.js";
 import AppHeader from "../../components/layout/AppHeader.jsx";
 import { formatScore, getInitials } from "../../utils/format.js";
 import { inputClasses } from "../../styles/formStyles.js";
+import { PLATAFORMAS, filtrarJuegos } from "./catalogoFiltros.js";
 
 const SKELETON_ITEMS = Array.from({ length: 6 }, (_, index) => index);
 
@@ -63,6 +64,7 @@ function Catalogo() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [genero, setGenero] = useState("todos");
+  const [plataforma, setPlataforma] = useState("todas");
   const [reloadKey, setReloadKey] = useState(0);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -109,23 +111,10 @@ function Catalogo() {
     );
   }, [juegos]);
 
-  const filteredJuegos = useMemo(() => {
-    const term = search.trim().toLowerCase();
-
-    return juegos.filter((juego) => {
-      if (genero !== "todos" && juego.genero !== genero) {
-        return false;
-      }
-
-      if (!term) {
-        return true;
-      }
-
-      return [juego.titulo, juego.genero, juego.plataforma].some((value) =>
-        value.toLowerCase().includes(term)
-      );
-    });
-  }, [juegos, search, genero]);
+  const filteredJuegos = useMemo(
+    () => filtrarJuegos(juegos, { search, genero, plataforma }),
+    [juegos, search, genero, plataforma]
+  );
 
   const handleRetry = () => {
     setStatus("loading");
@@ -170,8 +159,8 @@ function Catalogo() {
               Explora tu próximo juego
             </h1>
             <p className="mt-1 text-sm text-slate-400">
-              Busca por título, género o plataforma y encuentra tu próxima
-              aventura.
+              Busca por título y combina los filtros de género y plataforma
+              para encontrar tu próxima aventura.
             </p>
           </div>
 
@@ -184,9 +173,9 @@ function Catalogo() {
 
         <section
           aria-label="Filtros del catálogo"
-          className="mt-6 grid gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur sm:grid-cols-[1fr_240px]"
+          className="mt-6 grid gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur sm:grid-cols-2 lg:grid-cols-[1fr_220px_220px]"
         >
-          <div>
+          <div className="sm:col-span-2 lg:col-span-1">
             <label
               htmlFor="search"
               className="mb-2 block text-sm font-medium text-slate-200"
@@ -198,7 +187,7 @@ function Catalogo() {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Título, género o plataforma..."
+              placeholder="Buscar por título..."
               className={inputClasses(false)}
             />
           </div>
@@ -223,6 +212,37 @@ function Catalogo() {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="plataforma"
+              className="mb-2 block text-sm font-medium text-slate-200"
+            >
+              Plataforma
+            </label>
+            <select
+              id="plataforma"
+              value={plataforma}
+              onChange={(event) => setPlataforma(event.target.value)}
+              className={inputClasses(false)}
+            >
+              <option value="todas">Todas las plataformas</option>
+              {PLATAFORMAS.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+            {plataforma !== "todas" && (
+              <button
+                type="button"
+                onClick={() => setPlataforma("todas")}
+                className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-200 transition hover:border-rose-400/40 hover:bg-rose-500/10 hover:text-rose-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              >
+                Quitar filtro de plataforma
+              </button>
+            )}
           </div>
         </section>
 
@@ -265,10 +285,11 @@ function Catalogo() {
         {status === "ready" && filteredJuegos.length === 0 && (
           <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
             <h2 className="text-lg font-semibold text-white">
-              No encontramos juegos
+              No se encontraron juegos.
             </h2>
             <p className="mt-2 text-sm text-slate-400">
-              Prueba con otro término de búsqueda o cambia el filtro de género.
+              Prueba con otro título o cambia los filtros de género y
+              plataforma.
             </p>
           </div>
         )}

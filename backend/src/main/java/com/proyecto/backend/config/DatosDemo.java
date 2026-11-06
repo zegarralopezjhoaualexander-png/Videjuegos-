@@ -27,6 +27,9 @@ public class DatosDemo implements CommandLineRunner {
     private static final String XBOX_MIN = "Plataforma: Xbox Series X\nRequisitos de PC: no aplica";
     private static final String CONSOLA_REC = "Se recomienda conexión a internet para actualizaciones y funciones en línea";
 
+    private static final List<String> PLATAFORMAS_DEMO = List.of(
+            "PC", "PlayStation", "Xbox", "Nintendo");
+
     private static Ficha f(String dev, String fecha, String sinopsis, String min, String rec, String trailer) {
         return new Ficha(dev, fecha, sinopsis, min, rec, trailer);
     }
@@ -214,6 +217,13 @@ public class DatosDemo implements CommandLineRunner {
             }
             boolean cambio = false;
 
+            // Unifica los nombres de plataforma de datos anteriores.
+            String plataforma = normalizarPlataforma(j.getPlataforma());
+            if (!Objects.equals(plataforma, j.getPlataforma())) {
+                j.setPlataforma(plataforma);
+                cambio = true;
+            }
+
             // Datos de la ficha
             if (j.getDesarrollador() == null || DEMO.equals(j.getDesarrollador())) {
                 j.setDesarrollador(f.desarrollador());
@@ -274,6 +284,24 @@ public class DatosDemo implements CommandLineRunner {
                 repositorio.save(j);
             }
         }
+    }
+
+    private static String normalizarPlataforma(String plataforma) {
+        if (plataforma == null || plataforma.isBlank()) {
+            return plataforma;
+        }
+
+        List<String> normalizadas = new ArrayList<>();
+        for (String parte : plataforma.split(",")) {
+            String valor = parte.trim();
+            String normalizada = PLATAFORMAS_DEMO.stream()
+                    .filter((nombre) -> valor.toLowerCase().startsWith(nombre.toLowerCase()))
+                    .findFirst()
+                    .orElse(valor);
+            normalizadas.add(normalizada);
+        }
+
+        return String.join(", ", normalizadas);
     }
 
     private static String busqueda(String nombre) {
