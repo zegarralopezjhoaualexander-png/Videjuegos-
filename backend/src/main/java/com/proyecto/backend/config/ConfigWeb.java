@@ -16,11 +16,13 @@ public class ConfigWeb implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registro) {
-        // El catálogo es público; el carrito, las calificaciones y la administración piden sesión.
+        // El catálogo y el webhook de Stripe son públicos; el resto pide sesión.
         registro.addInterceptor(interceptor)
                 .addPathPatterns("/api/admin/**", "/api/auth/logout", "/api/auth/yo",
                         "/api/tienda/juegos/*/calificaciones/mia",
-                        "/api/tienda/carrito", "/api/tienda/carrito/**");
+                        "/api/tienda/carrito", "/api/tienda/carrito/**",
+                        "/api/pagos/**", "/api/ordenes/**")
+                .excludePathPatterns("/api/pagos/webhook");
     }
 
     @Override

@@ -224,6 +224,39 @@
   }
 }
 
+@keyframes pago-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pago-aparecer {
+  animation: pago-aparecer 0.28s ease both;
+}
+
+@keyframes dibujar-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.check-aprobado__circulo {
+  stroke-dasharray: 132;
+  stroke-dashoffset: 132;
+  animation: dibujar-check 0.55s ease forwards;
+}
+
+.check-aprobado__trazo {
+  stroke-dasharray: 28;
+  stroke-dashoffset: 28;
+  animation: dibujar-check 0.4s ease 0.25s forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .neon-button,
   .neon-button::before,
@@ -237,5 +270,15 @@
 
   .neon-button--primary:hover:not(:disabled)::before {
     left: -60%;
+  }
+
+  .pago-aparecer {
+    animation: none;
+  }
+
+  .check-aprobado__circulo,
+  .check-aprobado__trazo {
+    stroke-dashoffset: 0;
+    animation: none;
   }
 }

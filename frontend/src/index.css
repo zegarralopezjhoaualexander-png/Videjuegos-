@@ -6,3 +6,24 @@ body,
 #root {
   background: transparent;
 }
+
+@media print {
+  header,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+  }
+
+  .print-area {
+    border: 1px solid #d1d5db !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  .print-area * {
+    color: #111827 !important;
+  }
+}

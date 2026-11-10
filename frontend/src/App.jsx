@@ -7,6 +7,9 @@ import JuegoDetalle from "./pages/catalogo/JuegoDetalle.jsx";
 import Admin from "./pages/admin/Admin.jsx";
 import Inicio from "./pages/inicio/Inicio.jsx";
 import Carrito from "./pages/carrito/Carrito.jsx";
+import Checkout from "./pages/pago/Checkout.jsx";
+import PagoExitoso from "./pages/pago/PagoExitoso.jsx";
+import PagoError from "./pages/pago/PagoError.jsx";
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/carrito" element={<Carrito />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/pago-exitoso" element={<PagoExitoso />} />
+        <Route path="/pago-error" element={<PagoError />} />
         <Route path="/admin" element={<Admin />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

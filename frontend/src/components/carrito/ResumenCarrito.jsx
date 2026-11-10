@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { formatMoney } from "../../utils/format.js";
 import { PANEL, PRIMARY_BUTTON } from "./carritoStyles.js";
 
@@ -34,17 +35,12 @@ function DescuentoLinea({ resumen, quitandoCupon, onQuitarCupon }) {
 
 function BotonPago() {
   return (
-    <button
-      type="button"
-      disabled
-      aria-label="Continuar al pago, próximamente"
+    <Link
+      to="/checkout"
       className={`${PRIMARY_BUTTON} mt-5 w-full`}
     >
-      <span className="flex flex-col items-center gap-0.5">
-        <span>Continuar al pago</span>
-        <span className="text-xs font-normal tracking-normal">Próximamente</span>
-      </span>
-    </button>
+      Continuar al pago
+    </Link>
   );
 }
 

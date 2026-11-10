@@ -38,6 +38,24 @@ export function formatMoney(value, fallback = "") {
   return MONEY_FORMATTER.format(number);
 }
 
+const SOLES_FORMATTER = new Intl.NumberFormat("es-PE", {
+  style: "currency",
+  currency: "PEN",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+export function formatSoles(value, fallback = "") {
+  const number =
+    typeof value === "string" && value.trim() !== "" ? Number(value) : value;
+
+  if (!Number.isFinite(number)) {
+    return fallback;
+  }
+
+  return SOLES_FORMATTER.format(number);
+}
+
 export function formatPrice(precio, fallback = "") {
   return formatMoney(precio, fallback);
 }

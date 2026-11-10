@@ -84,6 +84,10 @@
   gap: 16px;
 }
 
+.auth-row > div {
+  min-width: 0;
+}
+
 .auth-field {
   display: grid;
   min-width: 0;
@@ -212,6 +216,13 @@
   font-size: 14px;
   line-height: 1.4;
   box-shadow: 0 0 16px rgba(255, 107, 139, 0.15);
+}
+
+.auth-card .auth-feedback--success {
+  border-color: rgba(52, 211, 153, 0.6);
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
 }
 
 .auth-footer {

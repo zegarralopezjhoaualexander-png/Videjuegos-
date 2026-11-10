@@ -25,6 +25,14 @@ function validateName(value, label) {
   return "";
 }
 
+function validateNombreUsuario(value) {
+  if (!value.trim()) {
+    return "El nombre de usuario es obligatorio";
+  }
+
+  return "";
+}
+
 function validateFechaNacimiento(value) {
   if (!value) {
     return "La fecha de nacimiento es obligatoria.";
@@ -114,6 +122,7 @@ function validatePassword(contrasena) {
 export function validateRegistro({
   nombre,
   apellido,
+  nombreUsuario,
   fechaNacimiento,
   correo,
   contrasena,
@@ -123,6 +132,7 @@ export function validateRegistro({
 
   const nombreError = validateName(nombre, "nombre");
   const apellidoError = validateName(apellido, "apellido");
+  const nombreUsuarioError = validateNombreUsuario(nombreUsuario ?? "");
   const fechaError = validateFechaNacimiento(fechaNacimiento);
   const correoError = validateEmail(correo);
   const passwordError = validatePassword(contrasena);
@@ -133,6 +143,10 @@ export function validateRegistro({
 
   if (apellidoError) {
     errors.apellido = apellidoError;
+  }
+
+  if (nombreUsuarioError) {
+    errors.nombreUsuario = nombreUsuarioError;
   }
 
   if (fechaError) {

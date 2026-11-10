@@ -18,7 +18,7 @@ public class BackendApplication {
     }
 
     @Bean
-    CommandLineRunner prepararCatalogo(VideojuegoRepository repositorio) {
+         CommandLineRunner prepararCatalogo(VideojuegoRepository repositorio) {
         return args -> {
             // Los juegos de versiones anteriores no tenían precio ni stock.
             List<Videojuego> existentes = repositorio.findAll();

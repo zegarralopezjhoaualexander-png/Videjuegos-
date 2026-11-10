@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registro } from "../../api/auth.js";
 import { useAuth } from "../../auth/useAuth.js";
@@ -14,6 +14,7 @@ import { NAME_MAX_LENGTH, validateRegistro } from "./registerValidation.js";
 const INITIAL_FORM = {
   nombre: "",
   apellido: "",
+  nombreUsuario: "",
   fechaNacimiento: "",
   correo: "",
   contrasena: "",
@@ -21,6 +22,34 @@ const INITIAL_FORM = {
 };
 
 const MAX_BIRTH_DATE = getYesterdayInputValue();
+const SUCCESS_REDIRECT_DELAY = 2000;
+
+// SIMULACIÓN FRONTEND: quitar este bloque cuando el backend controle los duplicados.
+const SIMULATED_DUPLICATES = {
+  correo: "duplicado@videojuegos.com",
+  nombreUsuario: "jugador1",
+};
+const SIMULATED_DUPLICATE_ERRORS = {
+  correo: "El correo electrónico ya está registrado",
+  nombreUsuario: "El nombre de usuario ya está en uso",
+};
+
+function getSimulatedDuplicateErrors(form) {
+  const simulatedErrors = {};
+
+  if (form.correo.trim().toLowerCase() === SIMULATED_DUPLICATES.correo) {
+    simulatedErrors.correo = SIMULATED_DUPLICATE_ERRORS.correo;
+  }
+
+  if (
+    form.nombreUsuario.trim().toLowerCase() ===
+    SIMULATED_DUPLICATES.nombreUsuario
+  ) {
+    simulatedErrors.nombreUsuario = SIMULATED_DUPLICATE_ERRORS.nombreUsuario;
+  }
+
+  return simulatedErrors;
+}
 
 function Registro() {
   const navigate = useNavigate();
@@ -30,6 +59,16 @@ function Registro() {
   const [feedback, setFeedback] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const redirectTimer = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimer.current) {
+        clearTimeout(redirectTimer.current);
+      }
+    };
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -43,10 +82,13 @@ function Registro() {
     event.preventDefault();
 
     const { errors: nextErrors, isValid } = validateRegistro(form);
-    setErrors(nextErrors);
+    const simulatedErrors = getSimulatedDuplicateErrors(form);
+    const mergedErrors = { ...nextErrors, ...simulatedErrors };
+
+    setErrors(mergedErrors);
     setFeedback("");
 
-    if (!isValid) {
+    if (!isValid || Object.keys(simulatedErrors).length > 0) {
       return;
     }
 
@@ -56,6 +98,7 @@ function Registro() {
       const session = await registro({
         nombre: form.nombre.trim(),
         apellido: form.apellido.trim(),
+        nombreUsuario: form.nombreUsuario.trim(),
         fechaNacimiento: form.fechaNacimiento,
         correo: form.correo.trim(),
         contrasena: form.contrasena,
@@ -63,7 +106,10 @@ function Registro() {
       });
 
       signIn(session);
-      navigate("/catalogo", { replace: true });
+      setIsRegistered(true);
+      redirectTimer.current = setTimeout(() => {
+        navigate("/catalogo", { replace: true });
+      }, SUCCESS_REDIRECT_DELAY);
     } catch (error) {
       setErrors(error?.fieldErrors ?? {});
       setFeedback(
@@ -91,6 +137,16 @@ function Registro() {
 
           <h1 className="auth-title">PLAYER 1</h1>
           <p className="auth-subtitle">Inserta tus datos para continuar</p>
+
+          {isRegistered && (
+            <div
+              role="status"
+              aria-live="polite"
+              className="auth-feedback auth-feedback--success"
+            >
+              Registro exitoso. Tu cuenta ha sido creada
+            </div>
+          )}
 
           {feedback && (
             <div role="alert" aria-live="polite" className="auth-feedback">
@@ -143,6 +199,27 @@ function Registro() {
             </div>
 
             <div className="auth-field">
+              <label htmlFor="nombreUsuario">Nombre de usuario</label>
+              <input
+                id="nombreUsuario"
+                name="nombreUsuario"
+                type="text"
+                value={form.nombreUsuario}
+                onChange={handleChange}
+                autoComplete="username"
+                placeholder="ana_gomez"
+                aria-invalid={Boolean(errors.nombreUsuario)}
+                aria-describedby={
+                  errors.nombreUsuario ? "nombre-usuario-error" : undefined
+                }
+              />
+              <FieldError
+                id="nombre-usuario-error"
+                message={errors.nombreUsuario}
+              />
+            </div>
+
+            <div className="auth-field">
               <label htmlFor="fechaNacimiento">Fecha de nacimiento</label>
               <input
                 id="fechaNacimiento"
@@ -189,7 +266,7 @@ function Registro() {
                 onChange={handleChange}
                 error={errors.contrasena}
                 autoComplete="new-password"
-                placeholder="Crea una contraseña segura"
+                placeholder="Crea una contraseña"
                 showPassword={showPassword}
                 onToggle={() => setShowPassword((current) => !current)}
                 describedBy="contrasena-requisitos"
@@ -203,7 +280,7 @@ function Registro() {
                 onChange={handleChange}
                 error={errors.confirmacion}
                 autoComplete="new-password"
-                placeholder="Repite tu contraseña"
+                placeholder="Repítela"
                 showPassword={showPassword}
               />
             </div>
@@ -212,7 +289,7 @@ function Registro() {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isRegistered}
               className="neon-button neon-button--primary"
             >
               <span className="neon-button__label">

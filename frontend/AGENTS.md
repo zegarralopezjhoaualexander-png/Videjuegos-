@@ -19,3 +19,13 @@
 - Static assets in `public/` are referenced root-absolute (`/icons.svg`, `/favicon.svg`).
 - ESLint's `react-refresh` rule requires files to export only components (keep non-component exports out of JSX component files).
 - Not a git repository (`git` commands will fail).
+
+## Diseño centrado en las Personas
+Antes de diseñar o modificar cualquier pantalla, lee PERSONAS.md y diseña
+pensando en Diego (jugador con presupuesto ajustado que paga con Yape desde
+el celular) y en Lucía (compradora cautelosa que necesita confianza y
+comprobante).
+- Prioriza el uso en celular, los pocos pasos y los mensajes de error claros.
+- Muestra siempre el total final y señales de seguridad en el pago.
+- Cuando propongas una pantalla, indica a qué Persona beneficia.
+Instrucción base: "Diseña las pantallas pensando en las Personas de PERSONAS.md".
