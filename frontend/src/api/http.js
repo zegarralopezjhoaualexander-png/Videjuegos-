@@ -1,7 +1,6 @@
-export const API_BASE = (import.meta.env.VITE_API_URL ?? "").replace(
-  /\/$/,
-  ""
-);
+import { api, API_BASE } from "../api.js";
+
+export { API_BASE };
 
 export class ApiError extends Error {
   constructor(message, { status = 0, fieldErrors = {}, cause } = {}) {
@@ -234,54 +233,20 @@ export async function requestJson(
     method = "GET",
     body,
     signal,
-    networkMessage = "No se pudo conectar con el servidor. Verifica que el backend esté en ejecución.",
+    networkMessage = "No se pudo conectar con el servidor",
     parseError = parseErrorResponse,
   } = {}
 ) {
-  const headers = { Accept: "application/json" };
+  const path = url.startsWith(API_BASE)
+    ? url.slice(API_BASE.length) || "/"
+    : url;
 
-  if (body !== undefined) {
-    headers["Content-Type"] = "application/json";
-  }
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  let response;
-
-  try {
-    response = await fetch(url, {
-      method,
-      headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
-      signal,
-    });
-  } catch (error) {
-    if (error.name === "AbortError") {
-      throw error;
-    }
-
-    throw new ApiError(networkMessage, { cause: error });
-  }
-
-  if (!response.ok) {
-    throw await parseError(response);
-  }
-
-  if (response.status === 204) {
-    return null;
-  }
-
-  const raw = await response.text();
-
-  if (!raw) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
+  return api(path, {
+    token,
+    method,
+    body,
+    signal,
+    networkMessage,
+    parseError,
+  });
 }

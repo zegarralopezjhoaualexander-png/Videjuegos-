@@ -16,6 +16,7 @@ target/
 !.env.example
 application-local.properties
 **/application-local.properties
+!backend/src/main/resources/application-local.properties
 
 # Editores / IDEs
 .idea/

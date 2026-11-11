@@ -1,7 +1,6 @@
 package com.proyecto.backend.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -23,13 +22,5 @@ public class ConfigWeb implements WebMvcConfigurer {
                         "/api/tienda/carrito", "/api/tienda/carrito/**",
                         "/api/pagos/**", "/api/ordenes/**")
                 .excludePathPatterns("/api/pagos/webhook");
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registro) {
-        registro.addMapping("/api/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*");
     }
 }
