@@ -2,7 +2,7 @@ import { parseDateInput } from "../../utils/date.js";
 import { validateEmail } from "./loginValidation.js";
 
 export const NAME_MAX_LENGTH = 50;
-export const PASSWORD_MIN_LENGTH = 12;
+export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_MAX_LENGTH = 72;
 
 const NAME_PATTERN = /^[\p{L} .'-]+$/u;
@@ -59,10 +59,6 @@ export function getPasswordChecks(contrasena = "") {
     length:
       contrasena.length >= PASSWORD_MIN_LENGTH &&
       contrasena.length <= PASSWORD_MAX_LENGTH,
-    uppercase: /\p{Lu}/u.test(contrasena),
-    lowercase: /\p{Ll}/u.test(contrasena),
-    number: /\p{N}/u.test(contrasena),
-    symbol: /[^\p{L}\p{N}\s]/u.test(contrasena),
   };
 }
 
@@ -71,8 +67,28 @@ export function getPasswordStrength(contrasena = "") {
     return { score: 0, label: "Sin evaluar", tone: "slate" };
   }
 
-  const checks = getPasswordChecks(contrasena);
-  const score = Object.values(checks).filter(Boolean).length;
+  const variety = [
+    /\p{Lu}/u.test(contrasena),
+    /\p{Ll}/u.test(contrasena),
+    /\p{N}/u.test(contrasena),
+    /[^\p{L}\p{N}\s]/u.test(contrasena),
+  ].filter(Boolean).length;
+
+  let score = 0;
+
+  if (contrasena.length >= PASSWORD_MIN_LENGTH) {
+    score += 1;
+  }
+
+  if (contrasena.length >= 12) {
+    score += 1;
+  }
+
+  if (contrasena.length >= 16) {
+    score += 1;
+  }
+
+  score += Math.min(variety, 2);
 
   const levels = [
     { label: "Muy débil", tone: "rose" },
@@ -96,24 +112,6 @@ function validatePassword(contrasena) {
     contrasena.length > PASSWORD_MAX_LENGTH
   ) {
     return `La contraseña debe tener entre ${PASSWORD_MIN_LENGTH} y ${PASSWORD_MAX_LENGTH} caracteres.`;
-  }
-
-  const checks = getPasswordChecks(contrasena);
-
-  if (!checks.uppercase) {
-    return "La contraseña debe incluir al menos una mayúscula.";
-  }
-
-  if (!checks.lowercase) {
-    return "La contraseña debe incluir al menos una minúscula.";
-  }
-
-  if (!checks.number) {
-    return "La contraseña debe incluir al menos un número.";
-  }
-
-  if (!checks.symbol) {
-    return "La contraseña debe incluir al menos un símbolo.";
   }
 
   return "";

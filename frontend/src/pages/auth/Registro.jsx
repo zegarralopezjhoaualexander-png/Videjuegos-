@@ -9,7 +9,12 @@ import PasswordStrength from "../../components/forms/PasswordStrength.jsx";
 import { getYesterdayInputValue } from "../../utils/date.js";
 import { BRAND_MARK, SITE_NAME } from "../../utils/siteContent.js";
 import "./authStyles.css";
-import { NAME_MAX_LENGTH, validateRegistro } from "./registerValidation.js";
+import {
+  NAME_MAX_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  validateRegistro,
+} from "./registerValidation.js";
 
 const INITIAL_FORM = {
   nombre: "",
@@ -61,6 +66,13 @@ function Registro() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const redirectTimer = useRef(null);
+
+  const isPasswordLengthValid =
+    form.contrasena.length >= PASSWORD_MIN_LENGTH &&
+    form.contrasena.length <= PASSWORD_MAX_LENGTH;
+  const doPasswordsMatch =
+    form.confirmacion.length > 0 && form.confirmacion === form.contrasena;
+  const isSubmitBlocked = !isPasswordLengthValid || !doPasswordsMatch;
 
   useEffect(() => {
     return () => {
@@ -289,7 +301,7 @@ function Registro() {
 
             <button
               type="submit"
-              disabled={isSubmitting || isRegistered}
+              disabled={isSubmitting || isRegistered || isSubmitBlocked}
               className="neon-button neon-button--primary"
             >
               <span className="neon-button__label">

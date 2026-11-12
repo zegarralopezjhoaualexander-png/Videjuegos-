@@ -10,10 +10,6 @@ const PASSWORD_REQUIREMENTS = [
     key: "length",
     label: `Entre ${PASSWORD_MIN_LENGTH} y ${PASSWORD_MAX_LENGTH} caracteres`,
   },
-  { key: "uppercase", label: "Al menos una mayúscula" },
-  { key: "lowercase", label: "Al menos una minúscula" },
-  { key: "number", label: "Al menos un número" },
-  { key: "symbol", label: "Al menos un símbolo" },
 ];
 
 const STRENGTH_TONES = {
