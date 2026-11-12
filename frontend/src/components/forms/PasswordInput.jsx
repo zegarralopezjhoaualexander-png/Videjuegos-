@@ -13,6 +13,7 @@ function PasswordInput({
   showPassword = false,
   onToggle,
   describedBy,
+  maxLength,
   inputClassName = "",
 }) {
   const errorId = `${id}-error`;
@@ -36,6 +37,7 @@ function PasswordInput({
           onChange={onChange}
           autoComplete={autoComplete}
           placeholder={placeholder}
+          maxLength={maxLength}
           aria-invalid={Boolean(error)}
           aria-describedby={ariaDescribedBy}
           className={`${inputClasses(Boolean(error))} ${

@@ -12,7 +12,7 @@ import "./authStyles.css";
 import {
   NAME_MAX_LENGTH,
   PASSWORD_MAX_LENGTH,
-  PASSWORD_MIN_LENGTH,
+  getPasswordChecks,
   validateRegistro,
 } from "./registerValidation.js";
 
@@ -67,12 +67,11 @@ function Registro() {
   const [isRegistered, setIsRegistered] = useState(false);
   const redirectTimer = useRef(null);
 
-  const isPasswordLengthValid =
-    form.contrasena.length >= PASSWORD_MIN_LENGTH &&
-    form.contrasena.length <= PASSWORD_MAX_LENGTH;
+  const passwordChecks = getPasswordChecks(form.contrasena);
+  const isPasswordValid = Object.values(passwordChecks).every(Boolean);
   const doPasswordsMatch =
     form.confirmacion.length > 0 && form.confirmacion === form.contrasena;
-  const isSubmitBlocked = !isPasswordLengthValid || !doPasswordsMatch;
+  const isSubmitBlocked = !isPasswordValid || !doPasswordsMatch;
 
   useEffect(() => {
     return () => {
@@ -282,6 +281,7 @@ function Registro() {
                 showPassword={showPassword}
                 onToggle={() => setShowPassword((current) => !current)}
                 describedBy="contrasena-requisitos"
+                maxLength={PASSWORD_MAX_LENGTH}
               />
 
               <PasswordInput
@@ -294,6 +294,7 @@ function Registro() {
                 autoComplete="new-password"
                 placeholder="Repítela"
                 showPassword={showPassword}
+                maxLength={PASSWORD_MAX_LENGTH}
               />
             </div>
 
