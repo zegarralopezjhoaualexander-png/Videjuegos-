@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
@@ -32,7 +31,6 @@ public class AuthService {
     private static final Duration DURACION_SESION = Duration.ofDays(7);
     private static final int EDAD_MINIMA = 13;
     private static final int EDAD_MAXIMA = 120;
-    private static final int MAX_BYTES_CONTRASENA = 72;
 
     private final UsuarioRepository usuarios;
     private final SesionRepository sesiones;
@@ -51,9 +49,6 @@ public class AuthService {
     public RespuestaAuthDTO registrar(RegistroDTO datos) {
         if (!datos.contrasena().equals(datos.confirmacion())) {
             throw new ErrorApi(HttpStatus.BAD_REQUEST, "Las contraseñas no coinciden");
-        }
-        if (excedeLimite(datos.contrasena())) {
-            throw new ErrorApi(HttpStatus.BAD_REQUEST, "La contraseña es demasiado larga");
         }
         validarEdad(datos.fechaNacimiento());
 
@@ -80,8 +75,7 @@ public class AuthService {
 
         Usuario usuario = usuarios.findByCorreo(identificador)
                 .or(() -> usuarios.findByNombreUsuario(identificador))
-                .filter(u -> !excedeLimite(datos.contrasena())
-                        && cifrador.matches(datos.contrasena(), u.getContrasenaHash()))
+                .filter(u -> cifrador.matches(datos.contrasena(), u.getContrasenaHash()))
                 .orElseThrow(() -> new ErrorApi(HttpStatus.UNAUTHORIZED,
                         "Correo o contraseña incorrectos"));
 
@@ -126,10 +120,6 @@ public class AuthService {
         if (edad > EDAD_MAXIMA) {
             throw new ErrorApi(HttpStatus.BAD_REQUEST, "La fecha de nacimiento no es válida");
         }
-    }
-
-    private boolean excedeLimite(String contrasena) {
-        return contrasena.getBytes(StandardCharsets.UTF_8).length > MAX_BYTES_CONTRASENA;
     }
 
     private String generarNombreInterno() {
